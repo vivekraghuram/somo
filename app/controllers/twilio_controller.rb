@@ -102,22 +102,23 @@ class TwilioController < ApplicationController
     options = question.options
     
     response = question.text + "\n"
+    return question.text + "\nA: very well\nB: somewhat\nC: very poor\n\nRespond with a single letter ex: B" 
     if question.questionType != "short_answer"
       puts "not short answer"
       puts options
-      #options.each do |option|
-      #  puts option
-      #  response += "\n" + abc[0].upcase + option.value
-      #  abc[0] = ""
-      #end
+      options.each do |option|
+        puts option
+        response += "\n" + abc[0].upcase + option.value
+        abc[0] = ""
+      end
       response += "\nA: very well\nB: somewhat\nC: very poor"
-      #if question.questionType == "multiple_choice" || question.questionType == "conditional"
+      if question.questionType == "multiple_choice" || question.questionType == "conditional"
       response += "\n\nRespond with a single letter ex: B"
-      #elsif question.questionType == "checkbox"
-      #  response += "\n\nRespond with one or more letters ex: AC"
-      #else
-      #  puts "unknown question type"
-      #end
+      elsif question.questionType == "checkbox"
+        response += "\n\nRespond with one or more letters ex: AC"
+      else
+        puts "unknown question type"
+      end
     else
       response += "\n\nRespond with a short answer (max 120 characters)"
     end
