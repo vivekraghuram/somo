@@ -133,3 +133,17 @@ input[name="short"] {
 input[name="conditional"] {
 	margin-right: 8px;
 }
+
+.error-msg {
+	background-color: #D36A6A;
+	padding: 20px;
+	color: #E6E6E6;
+	text-align: center;
+	display: inline-block;
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	-moz-box-shadow: 0 0 10px #B3B3B3;
+	-webkit-box-shadow: 0 0 10px #B3B3B3;
+	box-shadow: 0 0 10px #B3B3B3;
+}
