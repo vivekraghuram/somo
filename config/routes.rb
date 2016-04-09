@@ -10,7 +10,8 @@ Rails.application.routes.draw do
   post '/twilio/recieve' => 'twilio#recieve'
   post '/twilio/start' => 'twilio#start'
 
-  get '/twilio/drive' => 'twilio#drive_init'
+  get '/twilio/drive' => 'twilio#drive_save'
+  get '/twilio/drive/start' => 'twilio#drive_init'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

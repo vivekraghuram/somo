@@ -125,23 +125,46 @@ class TwilioController < ApplicationController
     return false
   end
 
-  def drive_save(form, question, phone_number)
+  def drive_save #(form, question, value, phone_number)
+    form = Form.find(1)
+    question = Question.new
+    value = "response"
+    phone_number = @@twilio_number
+    session = GoogleDrive.saved_session("config.json")
+    worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
     
+    # Find Row
+    row = 0
+    (2..worksheet.num_rows).each do |r|
+      if worksheet[r, 3] == phone_number
+        row = r
+        break
+      end
+    end
+    worksheet[row, 1] = Time.now
+    worksheet[row, 2] = true
+    worksheet[row, drive_get_column(question)] = value
+    debugger
+    worksheet.save
+    worksheet.reload
   end
 
-  def drive_init #(form)
+  def drive_init
+    #(form, phone_number)
     form = Form.find(1)
+    phone_number = @@twilio_number
     directory = Rails.root.join('tmp').to_s + "/"
-    file_name = "temp.csv"
+    file_name = drive_file_name(form)
     File.open(File.join(directory, file_name), 'w+') do |f|
       f.puts "Last Updated,In Progress,Phone Number," + drive_question_schema(form)
+      f.puts ",," + phone_number + ",,,,"
     end
     session = GoogleDrive.saved_session("config.json")
-    session.upload_from_file((directory + file_name), (form.name + " (Responses).csv"), convert: false)
+    session.upload_from_file((directory + file_name), file_name)
   end
 
-  def drive_question_schema(form)
-    return "Question 1, Question 2A, Question 2B, Question 3"
+  def drive_file_name(form)
+     return form.name + " (Responses).csv"
   end
 
   def send_twilio(number, body)
@@ -159,4 +182,15 @@ class TwilioController < ApplicationController
     #  body: body
     #})
   end
+
+#TODO
+
+  def drive_get_column(question)
+    return 4
+  end
+
+  def drive_question_schema(form)
+    return "Question 1, Question 2A, Question 2B, Question 3"
+  end
+
 end
