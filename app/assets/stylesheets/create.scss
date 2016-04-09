@@ -16,14 +16,43 @@
 }
 
 .delete {
+	margin-left: 10px;
 	padding: 5px 9px 6px 9px;
-	border-radius: 3px;
+	border-radius: 4px;
 	transition: all 0.5s;
+
+	i {
+		transition: all 0.5s;
+	}
 }
 
 .delete:hover {
 	cursor: pointer;
 	background-color: #E6E6E6;
+
+	i {
+		color: #85BEAA;
+	}
+}
+
+.chevron {
+	margin-left: 10px;
+	padding: 5px 8px 6px 8px;
+	border-radius: 4px;
+	transition: all 0.5s;
+
+	i {
+		transition: all 0.5s;
+	}
+}
+
+.chevron:hover {
+	cursor: pointer;
+	background-color: #E6E6E6;
+
+	i {
+		color: #85BEAA;
+	}
 }
 
 .required {
@@ -46,8 +75,9 @@
 	margin-top: 20px;
 	cursor: pointer;
 	border-radius: 20px;
-	background-color: #808080;
+	background-color: #85BEAA;
 	padding: 10px 20px 10px 20px;
+	transition: all 0.5s;
 
 	span{
 		color: #E6E6E6;
@@ -57,4 +87,43 @@
 		color: #E6E6E6;
 		margin-right: 4px;
 	}
+}
+
+.add:hover {
+	background-color: #648F80;
+}
+
+.add:active {
+	margin-top: 22px;
+}
+
+.conditional-q {
+	margin: 10px 0 10px 50px;
+	padding-right: 50px !important;
+	border-left: 4px solid #E6E6E6;
+}
+
+.options-button {
+	cursor: pointer;
+	color: #B3B3B3;
+	transition: all 0.5s;
+	margin-left: 20px;
+	margin-bottom: 0;
+	padding: 10px;
+
+	i {
+		margin-right: 8px;
+	}
+}
+
+.options-button:hover {
+	color: #85BEAA;
+}
+
+.options-button:active {
+	color: #648F80;
+}
+
+.icons-conditional {
+	margin-right: 30px;
 }
