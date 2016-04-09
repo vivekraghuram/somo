@@ -53,7 +53,7 @@ class TwilioController < ApplicationController
           end
         elsif ts.state == 1 # QUESTIONING
           puts "in questioning state"
-          if answers_question(response_body, ts.question)
+          if answers_question(ts.question, response_body)
             puts "correctly answers question"
             drive_save(ts.form, ts.question, response_body, response_number)
             if ts.question.questionType == "short_answer" # short answer value blank
