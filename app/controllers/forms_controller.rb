@@ -79,6 +79,10 @@ class FormsController < ApplicationController
     end
   end
 
+  def twilio
+    @f = Form.find_by_id(params[:id])
+  end
+
   private
 
   def create_params

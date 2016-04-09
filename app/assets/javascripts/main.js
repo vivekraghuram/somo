@@ -424,8 +424,9 @@ $(document).on('ready', function() {
       data : JSON.stringify(formObject)
     }).done(function() {
       alert("Success!");
+      window.location.href = "/";
     }).fail(function() {
-      alert("failure...");
+      alert("Looks like something went wrong. Please check your internet connection.");
     });
   }
 
@@ -460,5 +461,22 @@ $(document).on('ready', function() {
     if (allGood) {
       $("#error-msg").remove();
     }
+  });
+
+  $("#send-twilio-num").on("click", function() {
+    var twilioData = {"form": $("#form-name").data("fid"), "phone": $("#phonenumbers").val().replace(/\D/g,'') };
+    console.log(twilioData);
+    $.ajax({
+      type : "POST",
+      url :  '/twilio/start',
+      dataType: 'json',
+      contentType: 'application/json',
+      data : JSON.stringify(twilioData)
+    }).done(function() {
+      alert("Success!");
+      window.location.href = "/";
+    }).fail(function() {
+      alert("Looks like something went wrong. Please check your internet connection.");
+    });
   });
 });
