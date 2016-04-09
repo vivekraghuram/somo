@@ -42,6 +42,7 @@ $(document).on('ready', function() {
             '<option value="conditional">Conditional</option>' +
           '</select>' +
         '</div>' +
+        '<div class="columns short-icons">' +
         '<div class="delete right" data-qindex="' + qindex + '">' +
           '<i class="fa fa-trash fa-lg"></i>' +
         '</div>' +
@@ -50,6 +51,7 @@ $(document).on('ready', function() {
         '</div>' +
         '<div class="chevron right">' +
           '<i class="fa fa-chevron-up fa-lg"></i>' +
+        '</div>' +
         '</div>' +
       '</div>');
     formObject.questions.push({"questionType": "multiple_choice", "text": null, "options": []});
@@ -364,19 +366,42 @@ $(document).on('ready', function() {
   /** SUBMISSION **/
   // remember to remove options if the question is a short answer
   // remember to remove the null questions from array
-  function submit() {
+  function submitForm() {
+    console.log("Stuff is happening");
     var finalQuestions = [];
     for (var i = 0; i < formObject.questions.length; i++) {
-      if (!!formObject.questions[i]) {
+      if (!!formObject.questions[i]) { // if the question is not null
+
         if (formObject.questions[i].type == "short_answer") {
           formObject.questions[i].options = null;
+        } else if (formObject.questions[i].type == "conditional") {
+
+          for (var j = 0; j < formObject.questions[i].options.length; j++) {
+            if (formObject.questions[i].options[j].questions.length > 0) {
+
+              var finalSubQuestions = [];
+              for (var k = 0; k < formObject.questions[i].options[j].questions.length; k++) {
+                if(!!formObject.questions[i].options[j].questions[k]) { // if question is not null
+                  if (formObject.questions[i].options[j].questions[k].type == "short_answer") {
+                    formObject.questions[i].options[j].questions[k].options = null;
+                  }
+                  finalSubQuestions.push(formObject.questions[i].options[j].questions[k]);
+                }
+              }
+              formObject.questions[i].options[j].questions = finalSubQuestions;
+
+            }
+          }
         }
+
         finalQuestions.push(formObject.questions[i]);
       }
     }
 
     formObject.questions = finalQuestions;
 
+
+    console.log(JSON.stringify(formObject));
     $.ajax({
       type : "POST",
       url :  'forms/create',
@@ -399,5 +424,5 @@ $(document).on('ready', function() {
   $("#add-question").on("click", addQuestion);
 
   $("#log-form").on('click', function(e) {console.log(formObject);});
-  $("#submit-form").on('click', submit);
+  $("#submit-form").on('click', submitForm);
 });
