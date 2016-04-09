@@ -90,7 +90,7 @@ class TwilioController < ApplicationController
       if question.questionType == "multiple_choice" || question.questionType == "conditional"
         response += "\n\nRespond with a single letter ex: B" 
       elsif question.questionType == "checkbox"
-        response += "\n\nRespond with comma separated letter ex: A,C"
+        response += "\n\nRespond with one or more letters ex: AC"
       else
         puts "unknown question type"
       end
@@ -100,29 +100,27 @@ class TwilioController < ApplicationController
     return response
   end
 
-  def answers_question(question, value) # TODO: STORES RESULTS if True
+  def answers_question(question, value)
     abc = @@abc.dup
     if question.questionType == "short_answer"
-      # to sheets
-      #selected = value
-       
       return true
     elsif question.questionType == "checkbox"
-      value.strip.upcase.split(",").each do |choice|
-        index = abc.index(value.strip)
+      value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
+        index = abc.index(choice)
         if index.nil? or (index + 1) > questions.options.length
           return false
         end
-        #selected = question.options.at(index)
-        # to sheets
         return true
       end
     elsif question.questionType == "multiple_choice" || question.questionType == "conditional"
-      index = abc.index(value.strip.upcase)
+      value = value.upcase.gsub(/[^A-Z]/, "")
+      if value.length > 1
+        return false
+      end 
+      index = abc.index(value)
       if index.nil? or (index + 1) > question.options.length
         return false
       end
-      # to sheets
       return true
     end
     return false
@@ -166,7 +164,7 @@ class TwilioController < ApplicationController
     sorted_questions.each_with_index do |q, i|
       q.update_attribute drive_column: i
     end
-    return sorted_questions.map{|q| q.qname}join(",")
+    return sorted_questions.map{|q| q.qname}.join(",")
   end
 
   def send_twilio(number, body)
