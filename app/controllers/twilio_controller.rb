@@ -40,12 +40,14 @@ class TwilioController < ApplicationController
             ts.state = TwilioState.states[:questioning]
             ts.question = Question.find_by(name: "1", form: ts.form)
             ts.save
-            response_body = construct_question(ts.question)  
+            response_body = construct_question(ts.question)
+            drive_init(form, response_number)
           else # USER welcomed and !start
             response_body = @@survey_start
           end
         elsif ts.state == # QUESTIONING
           if answers_question(response_body, ts.question)
+            drive_save(form, ts.question, response_body, response_number)
             if ts.question.questionType == "short_answer" # short answer value blank
               opt = Option.find_by(question: ts.question, value: "")
             else
@@ -83,7 +85,7 @@ class TwilioController < ApplicationController
     if question.questionType != "short_answer"
       question.options.each do |option|
         response += "\n" + abc[0] + option.value
-        abc[0] = "" # poo
+        abc[0] = ""
       end
       if question.questionType == "multiple_choice" || question.questionType == "conditional"
         response += "\n\nRespond with a single letter ex: B" 
@@ -93,7 +95,7 @@ class TwilioController < ApplicationController
         puts "unknown question type"
       end
     else
-      response += "\n\nRespond with a short answer"
+      response += "\n\nRespond with a short answer (max 120 characters)"
     end
     return response
   end
@@ -103,6 +105,7 @@ class TwilioController < ApplicationController
     if question.questionType == "short_answer"
       # to sheets
       #selected = value
+       
       return true
     elsif question.questionType == "checkbox"
       value.strip.upcase.split(",").each do |choice|
@@ -125,11 +128,7 @@ class TwilioController < ApplicationController
     return false
   end
 
-  def drive_save #(form, question, value, phone_number)
-    form = Form.find(1)
-    question = Question.new
-    value = "response"
-    phone_number = @@twilio_number
+  def drive_save(form, question, value, phone_number)
     session = GoogleDrive.saved_session("config.json")
     worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
     
@@ -143,21 +142,16 @@ class TwilioController < ApplicationController
     end
     worksheet[row, 1] = Time.now
     worksheet[row, 2] = true
-    worksheet[row, drive_get_column(question)] = value
-    debugger
+    worksheet[row, question.drive_column] = value
     worksheet.save
-    worksheet.reload
   end
 
-  def drive_init
-    #(form, phone_number)
-    form = Form.find(1)
-    phone_number = @@twilio_number
+  def drive_init(form, phone_number)
     directory = Rails.root.join('tmp').to_s + "/"
     file_name = drive_file_name(form)
     File.open(File.join(directory, file_name), 'w+') do |f|
       f.puts "Last Updated,In Progress,Phone Number," + drive_question_schema(form)
-      f.puts ",," + phone_number + ",,,,"
+      f.puts ",," + phone_number + ("," * form.questions.length)
     end
     session = GoogleDrive.saved_session("config.json")
     session.upload_from_file((directory + file_name), file_name)
@@ -165,6 +159,14 @@ class TwilioController < ApplicationController
 
   def drive_file_name(form)
      return form.name + " (Responses).csv"
+  end
+
+  def drive_question_schema(form)
+    sorted_questions = form.questions.sort{|q1, q2| q1.qname <=> q2.qname}
+    sorted_questions.each_with_index do |q, i|
+      q.update_attribute drive_column: i
+    end
+    return sorted_questions.map{|q| q.qname}join(",")
   end
 
   def send_twilio(number, body)
@@ -175,22 +177,11 @@ class TwilioController < ApplicationController
     #account_sid = 'AC6016613046133ebde46069a02581cc7e'
     #auth_token = '8a45795f032cb5fd0b5f0567b58951be' 
      
-    #@client = Twilio::REST::Client.new account_sid, auth_token  
+    #@client = Twilio::REST::Client.new @@account_sid, @@auth_token  
     #@client.account.messages.create({
     #  from: @@twilio_number,
     #  to: number,
     #  body: body
     #})
   end
-
-#TODO
-
-  def drive_get_column(question)
-    return 4
-  end
-
-  def drive_question_schema(form)
-    return "Question 1, Question 2A, Question 2B, Question 3"
-  end
-
 end
