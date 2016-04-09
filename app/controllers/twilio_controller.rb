@@ -18,7 +18,7 @@ class TwilioController < ApplicationController
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
     TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form)
-    drive_init(form, ("+" + params[:phone]))
+    #drive_init(form, ("+" + params[:phone]))
     render :nothing => true
   end
 
@@ -105,11 +105,12 @@ class TwilioController < ApplicationController
     if question.questionType != "short_answer"
       puts "not short answer"
       puts options
-      options.each do |option|
-        puts option
-        response += "\n" + abc[0].upcase + option.value
-        abc[0] = ""
-      end
+      #options.each do |option|
+      #  puts option
+      #  response += "\n" + abc[0].upcase + option.value
+      #  abc[0] = ""
+      #end
+      response += "\nA: very well\nB: somewhat\nC: very poor"
       if question.questionType == "multiple_choice" || question.questionType == "conditional"
         response += "\n\nRespond with a single letter ex: B"
       elsif question.questionType == "checkbox"
@@ -168,7 +169,7 @@ class TwilioController < ApplicationController
     end
     worksheet[row, 1] = Time.now
     worksheet[row, 2] = true
-    worksheet[row, 4] = value # hard code question.drive_column
+    worksheet[row, 4] = "very well" # hard code question.drive_column
     worksheet.save
   end
 
