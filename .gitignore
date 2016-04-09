@@ -15,7 +15,7 @@
 /log/*
 !/log/.keep
 /tmp
-=======
+.byebug_history
 *.rbc
 capybara-*.html
 .rspec
