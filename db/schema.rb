@@ -19,27 +19,28 @@ ActiveRecord::Schema.define(version: 20160409094749) do
   create_table "forms", force: :cascade do |t|
     t.string   "name"
     t.text     "intro"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "firstQuestion"
   end
 
   create_table "options", force: :cascade do |t|
     t.string   "value"
     t.integer  "question_id"
-    t.integer  "next"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "nextQuestion"
   end
 
   add_index "options", ["question_id"], name: "index_options_on_question_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.string   "type"
-    t.string   "name"
+    t.string   "questionType"
     t.string   "text"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.integer  "form_id"
+    t.string   "qname"
   end
 
   add_index "questions", ["form_id"], name: "index_questions_on_form_id", using: :btree

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'foundation-rails', '~> 5.5.3.2'
 
-gem 'font-awesome-sass', '~> 4.5.0'
+gem 'font-awesome-rails'
 
 # For Googlesheets
 gem 'google_drive'
