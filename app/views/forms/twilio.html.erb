@@ -4,12 +4,13 @@
 
 <form>
   <div class="row">
+    <h1 id="form-name" data-fid="<%= @f.id %>"><%= @f.name %></h1>
     <p>Phone Numbers, separated by commas.</p>
-    <textarea rows="6" cols="1" placeholder="Phone Numbers"></textarea>
+    <textarea rows="6" cols="1" placeholder="Phone Numbers" id="phonenumbers"></textarea>
   </div>
 
   <div class="row finish-cancel">
-    <div class="finish columns right small-5 medium-3 large-2">
+    <div class="finish columns right small-5 medium-3 large-2" id="send-twilio-num">
       <span>Send</span>
     </div>
   </div>
