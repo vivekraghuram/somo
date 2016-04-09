@@ -4,6 +4,9 @@ gem 'foundation-rails', '~> 5.5.3.2'
 
 gem 'font-awesome-sass', '~> 4.5.0'
 
+# For Twilio
+gem 'twilio-ruby', '~> 4.11.1'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use sqlite3 as the database for Active Record
