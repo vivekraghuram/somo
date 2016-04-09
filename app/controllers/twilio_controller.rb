@@ -9,7 +9,7 @@ class TwilioController < ApplicationController
   @@account_sid = 'ACc5f882e1e4d40eb6e854830f67a20643' 
   @@auth_token = '6e6cdc5b174ee4a0ae0ef8ac7854a2d6'
 
-  @@survey_start = 'Welcome to Somo surveys: reply BEGIN to start, and END to stop'
+  @@survey_start = 'Welcome to Somo surveys: reply BEGIN to start, and FINISH to stop'
   @@survey_end = 'Thank you for using Somo surveys'
  
   @@abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -33,7 +33,7 @@ class TwilioController < ApplicationController
       ts = TwilioState.find_by phone: response_number
       puts ts.state
       if !ts.blank? and         
-        if response_body == "END" or ts.state == :stopped # END
+        if response_body == "finish" or ts.state == :stopped # END
           puts "recieved end of in stopped state"
           ts.state = TwilioState.states[:stopped]
           ts.destroy
