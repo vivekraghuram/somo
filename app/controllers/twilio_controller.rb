@@ -43,7 +43,7 @@ class TwilioController < ApplicationController
           if response_body == "BEGIN"
             puts "recieved begin"
             ts.state += 1
-            ts.question = Question.find_by(id: ts.form.firstQuestion, form: ts.form)
+            ts.question = Question.find(ts.form.firstQuestion)
             ts.save
             response_body = construct_question(ts.question)
             drive_init(form, response_number)
