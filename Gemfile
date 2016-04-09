@@ -4,6 +4,9 @@ gem 'foundation-rails', '~> 5.5.3.2'
 
 gem 'font-awesome-sass', '~> 4.5.0'
 
+# For Googlesheets
+gem 'google_drive'
+
 # For heroku logging
 gem 'rails_12factor', group: :production
 

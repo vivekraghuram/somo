@@ -1,4 +1,7 @@
 require 'twilio-ruby'
+require "google/api_client"
+require "google_drive"
+
 class TwilioController < ApplicationController
   skip_before_action :verify_authenticity_token
 
@@ -120,6 +123,25 @@ class TwilioController < ApplicationController
       return true
     end
     return false
+  end
+
+  def drive_save(form, question, phone_number)
+    
+  end
+
+  def drive_init #(form)
+    form = Form.find(1)
+    directory = Rails.root.join('tmp').to_s + "/"
+    file_name = "temp.csv"
+    File.open(File.join(directory, file_name), 'w+') do |f|
+      f.puts "Last Updated,In Progress,Phone Number," + drive_question_schema(form)
+    end
+    session = GoogleDrive.saved_session("config.json")
+    session.upload_from_file((directory + file_name), (form.name + " (Responses).csv"), convert: false)
+  end
+
+  def drive_question_schema(form)
+    return "Question 1, Question 2A, Question 2B, Question 3"
   end
 
   def send_twilio(number, body)
