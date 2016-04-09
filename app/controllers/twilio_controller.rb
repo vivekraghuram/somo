@@ -2,6 +2,11 @@ require 'twilio-ruby'
 class TwilioController < ApplicationController
 
   #before_action :get_twilio_client
+
+  def start
+    form = Form.find(params[:form])
+    params[:phone]
+  end
   
   def recieve
     if params[:SmsStatus] == "received"
