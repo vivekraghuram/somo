@@ -81,9 +81,10 @@ class TwilioController < ApplicationController
 
   def construct_question(question) # returns body of message
     abc = @@abc.dup
+    options = Option.find_by(question: question)
     response = question.text + "\n"
     if question.questionType != "short_answer"
-      question.options.each do |option|
+      options.each do |option|
         response += "\n" + abc[0] + option.value
         abc[0] = ""
       end
@@ -102,12 +103,13 @@ class TwilioController < ApplicationController
 
   def answers_question(question, value)
     abc = @@abc.dup
+    options = Option.find_by(question: question)
     if question.questionType == "short_answer"
       return true
     elsif question.questionType == "checkbox"
       value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
         index = abc.index(choice)
-        if index.nil? or (index + 1) > questions.options.length
+        if index.nil? or (index + 1) > options.length
           return false
         end
         return true
@@ -118,7 +120,7 @@ class TwilioController < ApplicationController
         return false
       end 
       index = abc.index(value)
-      if index.nil? or (index + 1) > question.options.length
+      if index.nil? or (index + 1) > options.length
         return false
       end
       return true
