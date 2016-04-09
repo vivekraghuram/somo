@@ -104,6 +104,7 @@ class TwilioController < ApplicationController
     response = question.text + "\n"
     if question.questionType != "short_answer"
       puts "not short answer"
+      puts options
       options.each do |option|
         puts option
         response += "\n" + abc[0].upcase + option.value
