@@ -6,7 +6,7 @@ class FormsController < ApplicationController
     questions = params[:questions]
     if !questions.nil?
       questions.reverse.each do |q|
-        question = Question.create(form: form, questionType: q[:questionType], text: q[:text], qname: q[:qname])
+        question = Question.create(form_id: form.id, questionType: q[:questionType], text: q[:text], qname: q[:qname])
         last_qid = cur_qid
         cur_qid = question.id
         options = q[:options]
@@ -17,7 +17,7 @@ class FormsController < ApplicationController
             followups = o[:questions]
             if !followups.nil?
               followups.reverse.each do |f|
-                followQuestion = Question.create(form: form, questionType: f[:questionType], text: f[:text], qname: f[:qname])
+                followQuestion = Question.create(form_id: form.id, questionType: f[:questionType], text: f[:text], qname: f[:qname])
                 last_fid = cur_fid
                 cur_fid = followQuestion.id
                 follow_options = f[:options]

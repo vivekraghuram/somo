@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160409184423) do
+ActiveRecord::Schema.define(version: 20160409094749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,20 @@ ActiveRecord::Schema.define(version: 20160409184423) do
 
   add_index "questions", ["form_id"], name: "index_questions_on_form_id", using: :btree
 
+  create_table "twilio_states", force: :cascade do |t|
+    t.integer  "form_id"
+    t.integer  "question_id"
+    t.string   "phone"
+    t.integer  "state"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "twilio_states", ["form_id"], name: "index_twilio_states_on_form_id", using: :btree
+  add_index "twilio_states", ["question_id"], name: "index_twilio_states_on_question_id", using: :btree
+
   add_foreign_key "options", "questions"
   add_foreign_key "questions", "forms"
+  add_foreign_key "twilio_states", "forms"
+  add_foreign_key "twilio_states", "questions"
 end
