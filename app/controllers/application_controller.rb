@@ -10,19 +10,19 @@ class ApplicationController < ActionController::Base
   def create
   end
 
-  def render_json_message(status, options = {})
-    render json: {
-      message: options[:message],
-      to: options[:to],
-      errors: options[:errors]
-    }, status: status
-  end
-
   def send_twilio
 
   end
 
   def create_dev
 
+  end
+
+  def render_json_message(status, options = {})
+    render json: {
+      message: options[:message],
+      to: options[:to],
+      errors: options[:errors]
+    }, status: status
   end
 end
