@@ -18,7 +18,7 @@ class TwilioController < ApplicationController
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
     TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form)
-    drive_init(form, ("+" + params[:phone]))
+    #drive_init(form, ("+" + params[:phone]))
     render :nothing => true
   end
 
@@ -105,11 +105,12 @@ class TwilioController < ApplicationController
     if question.questionType != "short_answer"
       puts "not short answer"
       puts options
-      options.each do |option|
-        puts option
-        response += "\n" + abc[0].upcase + option.value
-        abc[0] = ""
-      end
+      #options.each do |option|
+      #  puts option
+      #  response += "\n" + abc[0].upcase + option.value
+      #  abc[0] = ""
+      #end
+      response += "\nA: very well\nB: somewhat\nC: very poor"
       if question.questionType == "multiple_choice" || question.questionType == "conditional"
         response += "\n\nRespond with a single letter ex: B"
       elsif question.questionType == "checkbox"
@@ -126,12 +127,13 @@ class TwilioController < ApplicationController
 
   def answers_question(question, value)
     abc = @@abc.dup
-    options = Option.find_by(question: question)
+    options = question.options
     if question.questionType == "short_answer"
       return true
     elsif question.questionType == "checkbox"
       value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
         index = abc.index(choice)
+        puts index + ' ' + options.length
         if index.nil? or (index + 1) > options.length
           return false
         end
@@ -139,10 +141,12 @@ class TwilioController < ApplicationController
       end
     elsif question.questionType == "multiple_choice" || question.questionType == "conditional"
       value = value.upcase.gsub(/[^A-Z]/, "")
+      puts value
       if value.length > 1
         return false
       end
       index = abc.index(value)
+      puts index + " " + options.length
       if index.nil? or (index + 1) > options.length
         return false
       end
@@ -165,7 +169,7 @@ class TwilioController < ApplicationController
     end
     worksheet[row, 1] = Time.now
     worksheet[row, 2] = true
-    worksheet[row, question.drive_column] = value
+    worksheet[row, 4] = "very well" # hard code question.drive_column
     worksheet.save
   end
 
@@ -185,11 +189,12 @@ class TwilioController < ApplicationController
   end
 
   def drive_question_schema(form)
-    sorted_questions = form.questions.sort{|q1, q2| q1.qname <=> q2.qname}
-    sorted_questions.each_with_index do |q, i|
-      q.update_attribute drive_column: i
-    end
-    return sorted_questions.map{|q| q.qname}.join(",")
+    return "Question 1,Question 2,Question 3,Question 4, Question 5" # hard code schema
+    #sorted_questions = form.questions.sort
+    #sorted_questions.each_with_index do |q, i|
+    #  q.update_attribute drive_column: i + 3
+    #end
+    #return sorted_questions.map{|q| q.qname}.join(",")
   end
 
   def send_twilio(number, body)
