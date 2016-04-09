@@ -18,6 +18,7 @@ class TwilioController < ApplicationController
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
     TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form)
+    drive_init(form, ("+" + params[:phone]))
     render :nothing => true
   end
   
