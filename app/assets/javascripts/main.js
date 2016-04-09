@@ -2,7 +2,7 @@ $(document).on('ready', function() {
 
   /** MAGIC NUMBERS **/
   var introMaxLength = 100;
-  var questionMaxLength = 100;
+  var questionMaxLength = 60;
   var questionMaxNum = 10;
   var optionMaxLength = 100;
   var optionMaxNum = 10;
@@ -439,4 +439,26 @@ $(document).on('ready', function() {
 
   $("#log-form").on('click', function(e) {console.log(formObject);});
   $("#submit-form").on('click', submitForm);
+
+  $(document).on("keyup", function(e) {
+    var allGood = true;
+    $(".question-title").each(function() {
+      if ($(this).val().length > questionMaxLength) {
+        allGood = false;
+        if(!$(this).hasClass("error")) {
+          $(this).addClass("error");
+          if ($("#error-msg").length === 0) {
+            $("form").after('<div class="error-msg" id="error-msg">' +
+              'For best results in SMS, limit questions to 60 characters.' +
+            '</div>');
+          }
+        }
+      } else {
+        $(this).removeClass("error");
+      }
+    });
+    if (allGood) {
+      $("#error-msg").remove();
+    }
+  });
 });
