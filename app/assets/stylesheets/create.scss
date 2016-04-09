@@ -13,6 +13,16 @@
 .options {
 	margin-left: 20px;
 	margin-bottom: 0;
+
+	.fa-close {
+		color: #B3B3B3;
+		cursor: pointer;
+		transition: all 0.5s;
+	}
+}
+
+.fa-close:hover {
+	color: #808080;
 }
 
 .delete {
