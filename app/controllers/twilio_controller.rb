@@ -31,7 +31,7 @@ class TwilioController < ApplicationController
       response_body = params[:Body].strip.upcase
       puts "reponse " + response_number + " " + response_body
       ts = TwilioState.find_by phone: response_number
-      puts ts == nil
+      puts ts.state
       if !ts.blank? and         
         if response_body == "END" or ts.state == TwilioState.states[:stopped] # END
           puts "recieved end of in stopped state"
