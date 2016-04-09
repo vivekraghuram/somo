@@ -35,12 +35,12 @@ class TwilioController < ApplicationController
       if !ts.blank? and         
         if response_body == "END" or ts.state != TwilioState.states[:stopped] # END
           ts.state = TwilioState.states[:stopped]
-          ts.save
+          ts.destroy
           response_body = @@survey_end
         elsif ts.state == TwilioState.states[:welcome] # WELCOME
           if response_body == "BEGIN"
             ts.state = TwilioState.states[:questioning]
-            ts.question = Question.find_by(name: "1", form: ts.form)
+            ts.question = Question.find_by(id: ts.form.firstQuestion, form: ts.form)
             ts.save
             response_body = construct_question(ts.question)
             drive_init(form, response_number)
