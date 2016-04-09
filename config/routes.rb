@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   root 'application#home'
 
   get 'create' => 'application#create'
+  get 'send_twilio' => 'application#send_twilio'
+  get 'create_dev' => 'application#create_dev'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

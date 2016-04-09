@@ -1,220 +1,225 @@
 <h4 class="survey-heading">CREATE SURVEY</h4>
 <form>
 <div class="survey">
-	<div class="row header">
-			<input type="text" name="title" placeholder="Survey Title">
-			<textarea rows="3" cols="1" placeholder="Survey Description"></textarea>
-		<hr>
-	</div>
+  <div class="row header">
+      <input type="text" name="title" placeholder="Survey Title" id="form-title-field">
+      <textarea rows="3" cols="1" placeholder="Survey Description" id="form-intro-field"></textarea>
+    <hr>
+  </div>
 
-	<div class="row question">
-		<div class="q-header columns small-8 large-8">
-			<input type="text" name="question" placeholder="Untitled Question">
-			<hr>
-		</div>
-		<div class="drop-down columns small-4 large-4">
-			<select id="custom-drop">
-				<option value="Multiple Choice">Multiple Choice</option>
-				<option value="Checkboxes">Checkboxes</option>
-				<option value="Short Answer">Short Answer</option>
-				<option value="Conditional">Conditional</option>
-			</select>
-		</div>
+  <div class="add columns small-centered large-centered text-center"  id="add-question">
+    <i class="fa fa-plus"></i>
+    <span>Add Question</span>
+  </div>
 
-		<div class="options columns">
-		  <i class="fa fa-circle-o"></i>
-		  <input type="text" name="option" placeholder="Option 1">
-		</div>
-		<div class="options columns">
-		  <i class="fa fa-circle-o"></i>
-		  <input type="text" name="option" placeholder="Option 2">
-		</div>
-		<div class="options-button columns">
-		  <i class="fa fa-circle-o"></i>
-		  Add Option
-		</div>
-
-		<div class="required columns left">
-			<label><input type="checkbox" name="required" value="required"><span>Required</span></label>
-		</div>
-
-		<div class="delete right">
-			<i class="fa fa-trash fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-down fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-up fa-lg"></i>
-		</div>
-	</div>
-
-	<div class="row question">
-		<div class="q-header columns small-8 large-8">
-			<input type="text" name="question" placeholder="Untitled Question">
-			<hr>
-		</div>
-		<div class="drop-down columns small-4 large-4">
-			<select id="custom-drop">
-				<option value="Checkboxes">Checkboxes</option>
-				<option value="Multiple Choice">Multiple Choice</option>
-				<option value="Short Answer">Short Answer</option>
-				<option value="Conditional">Conditional</option>
-			</select>
-		</div>
-
-		<div class="options columns">
-		  <i class="fa fa-square-o fa-lg"></i>
-		  <input type="text" name="option" placeholder="Option 1">
-		</div>
-		<div class="options columns">
-		  <i class="fa fa-square-o fa-lg"></i>
-		  <input type="text" name="option" placeholder="Option 2">
-		</div>
-		<div class="options-button columns">
-		  <i class="fa fa-square-o fa-lg"></i>
-		  Add Option
-		</div>
-
-		<div class="required columns left">
-			<label><input type="checkbox" name="required" value="required"><span>Required</span></label>
-		</div>
-
-		<div class="delete right">
-			<i class="fa fa-trash fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-down fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-up fa-lg"></i>
-		</div>
-	</div>
-
-	<div class="row question">
-		<div class="q-header columns small-8 large-8">
-			<input type="text" name="question" placeholder="Untitled Question">
-			<hr>
-		</div>
-		<div class="drop-down columns small-4 large-4">
-			<select id="custom-drop">
-				<option value="Short Answer">Short Answer</option>
-				<option value="Checkboxes">Checkboxes</option>
-				<option value="Multiple Choice">Multiple Choice</option>
-				<option value="Conditional">Conditional</option>
-			</select>
-		</div>
-
-		<div class="short columns small-11 large-11">
-			Short Answer
-		</div>
-
-		<div class="required columns left">
-			<label><input type="checkbox" name="required" value="required"><span>Required</span></label>
-		</div>
-
-		<div class="delete right">
-			<i class="fa fa-trash fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-down fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-up fa-lg"></i>
-		</div>
-	</div>
-
-	<div class="row question">
-		<div class="q-header columns small-8 large-8">
-			<input type="text" name="question" placeholder="Untitled Question">
-			<hr>
-		</div>
-		<div class="drop-down columns small-4 large-4">
-			<select id="custom-drop">
-				<option value="Conditional">Conditional</option>				
-				<option value="Short Answer">Short Answer</option>
-				<option value="Checkboxes">Checkboxes</option>
-				<option value="Multiple Choice">Multiple Choice</option>
-			</select>
-		</div>
-
-		<div class="columns options">
-		  <i class="fa fa-circle-o"></i>
-		  <input type="text" name="option-conditional" placeholder="Option 1">
-		</div>
-		<div class="conditional-check columns">
-			<label><input type="checkbox" name="conditional" value="conditional"><span>Conditional</span></label>
-		</div>
-
-		<div class="conditional-q columns">
-			<div class="columns small-8 large-8">
-				<input type="text" name="question" placeholder="Untitled Question">
-			<hr>
-			</div>
-			<div class="drop-down columns small-4 large-4 right">
-				<select id="custom-drop">
-					<option value="Multiple Choice">Multiple Choice</option>
-					<option value="Checkboxes">Checkboxes</option>
-					<option value="Short Answer">Short Answer</option>
-				</select>
-			</div>
-
-			<div class="options columns">
-			  <i class="fa fa-circle-o"></i>
-			  <input type="text" name="option" placeholder="Option 1">
-			</div>
-			<div class="options-button columns">
-			  <i class="fa fa-circle-o"></i>
-			  Add Option
-			</div>
-
-			<div class="required columns left">
-				<label><input type="checkbox" name="required" value="required"><span>Required</span></label>
-			</div>
-
-			<div class="icons-conditional">
-				<div class="delete right">
-					<i class="fa fa-trash fa-lg"></i>
-				</div>
-				<div class="chevron right">
-					<i class="fa fa-chevron-down fa-lg"></i>
-				</div>
-				<div class="chevron right">
-					<i class="fa fa-chevron-up fa-lg"></i>
-				</div>
-			</div>
-		</div>
-
-		<div class="options columns small-8 large-8">
-		  <i class="fa fa-circle-o"></i>
-		  <input type="text" name="option" placeholder="Option 2">
-		</div>
-		<div class="conditional-check columns">
-			<label><input type="checkbox" name="conditional" value="conditional"><span>Conditional</span></label>
-		</div>
-		<div class="options-button columns">
-		  <i class="fa fa-circle-o"></i>
-		  Add Option
-		</div>
-
-		<div class="required columns left">
-			<label><input type="checkbox" name="required" value="required"><span>Required</span></label>
-		</div>
-
-		<div class="delete right">
-			<i class="fa fa-trash fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-down fa-lg"></i>
-		</div>
-		<div class="chevron right">
-			<i class="fa fa-chevron-up fa-lg"></i>
-		</div>
-	</div>
-
-	<div class="add columns small-centered large-centered text-center small-6 medium-4 large-2">
-		<i class="fa fa-plus"></i>
-		<span>Add Question</span>
-	</div>
+  <div class="row finish-cancel">
+    <div class="finish columns right small-5 medium-3 large-2" id="submit-form">
+      <span>Finish</span>
+    </div>
+    <div class="cancel columns right small-5 medium-3 large-2">
+      <span>Cancel</span>
+    </div>
+  </div>
 </div>
 </form>
+
+
+<!--
+<div class="row question">
+  <div class="q-header columns small-8 large-8">
+    <input type="text" name="question" placeholder="Untitled Question">
+    <hr>
+  </div>
+  <div class="drop-down columns small-4 large-4">
+    <select id="custom-drop">
+      <option value="Multiple Choice">Multiple Choice</option>
+      <option value="Checkboxes">Checkboxes</option>
+      <option value="Short Answer">Short Answer</option>
+      <option value="Conditional">Conditional</option>
+    </select>
+  </div>
+
+  <div class="options columns">
+    <i class="fa fa-circle-o"></i>
+    <input type="text" name="option" placeholder="Option 1">
+    <i class="fa fa-close"></i>
+  </div>
+  <div class="options columns">
+    <i class="fa fa-circle-o"></i>
+    <input type="text" name="option" placeholder="Option 2">
+    <i class="fa fa-close"></i>
+  </div>
+  <div class="options-button columns">
+    <i class="fa fa-circle-o"></i>
+    Add Option
+  </div>
+
+  <div class="delete right">
+    <i class="fa fa-trash fa-lg"></i>
+  </div>
+  <div class="chevron right">
+    <i class="fa fa-chevron-down fa-lg"></i>
+  </div>
+  <div class="chevron right">
+    <i class="fa fa-chevron-up fa-lg"></i>
+  </div>
+</div>
+
+<div class="row question">
+  <div class="q-header columns small-8 large-8">
+    <input type="text" name="question" placeholder="Untitled Question">
+    <hr>
+  </div>
+  <div class="drop-down columns small-4 large-4">
+    <select id="custom-drop">
+      <option value="Checkboxes">Checkboxes</option>
+      <option value="Multiple Choice">Multiple Choice</option>
+      <option value="Short Answer">Short Answer</option>
+      <option value="Conditional">Conditional</option>
+    </select>
+  </div>
+
+  <div class="options columns">
+    <i class="fa fa-square-o fa-lg"></i>
+    <input type="text" name="option" placeholder="Option 1">
+    <i class="fa fa-close"></i>
+  </div>
+  <div class="options columns">
+    <i class="fa fa-square-o fa-lg"></i>
+    <input type="text" name="option" placeholder="Option 2">
+    <i class="fa fa-close"></i>
+  </div>
+  <div class="options-button columns">
+    <i class="fa fa-square-o fa-lg"></i>
+    Add Option
+  </div>
+
+  <div class="delete right">
+    <i class="fa fa-trash fa-lg"></i>
+  </div>
+  <div class="chevron right">
+    <i class="fa fa-chevron-down fa-lg"></i>
+  </div>
+  <div class="chevron right">
+    <i class="fa fa-chevron-up fa-lg"></i>
+  </div>
+</div>
+
+<div class="row question">
+  <div class="q-header columns small-8 large-8">
+    <input type="text" name="question" placeholder="Untitled Question">
+    <hr>
+  </div>
+  <div class="drop-down columns small-4 large-4">
+    <select id="custom-drop">
+      <option value="Short Answer">Short Answer</option>
+      <option value="Checkboxes">Checkboxes</option>
+      <option value="Multiple Choice">Multiple Choice</option>
+      <option value="Conditional">Conditional</option>
+    </select>
+  </div>
+
+  <div class="short columns small-11 large-11">
+    Short Answer
+  </div>
+
+  <div class="columns short-icons">
+    <div class="delete right">
+      <i class="fa fa-trash fa-lg"></i>
+    </div>
+    <div class="chevron right">
+      <i class="fa fa-chevron-down fa-lg"></i>
+    </div>
+    <div class="chevron right">
+      <i class="fa fa-chevron-up fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+<div class="row question">
+  <div class="q-header columns small-8 large-8">
+    <input type="text" name="question" placeholder="Untitled Question">
+    <hr>
+  </div>
+  <div class="drop-down columns small-4 large-4">
+    <select id="custom-drop">
+      <option value="Conditional">Conditional</option>
+      <option value="Short Answer">Short Answer</option>
+      <option value="Checkboxes">Checkboxes</option>
+      <option value="Multiple Choice">Multiple Choice</option>
+    </select>
+  </div>
+
+  <div class="options columns">
+    <i class="fa fa-circle-o"></i>
+    <input type="text" name="option-conditional" placeholder="Option 1">
+    <i class="fa fa-close"></i>
+  </div>
+  <div class="conditional-check columns">
+    <label><input type="checkbox" name="conditional" value="conditional"><span>Conditional</span></label>
+  </div>
+
+  <div class="conditional-q columns">
+    <div class="columns small-8 large-8">
+      <input type="text" name="question" placeholder="Untitled Question">
+    <hr>
+    </div>
+    <div class="drop-down columns small-4 large-4 right">
+      <select id="custom-drop">
+        <option value="Multiple Choice">Multiple Choice</option>
+        <option value="Checkboxes">Checkboxes</option>
+        <option value="Short Answer">Short Answer</option>
+      </select>
+    </div>
+
+    <div class="options columns">
+      <i class="fa fa-circle-o"></i>
+      <input type="text" name="option" placeholder="Option 1">
+    </div>
+    <div class="options-button columns">
+      <i class="fa fa-circle-o"></i>
+      Add Option
+    </div>
+
+    <div class="icons-conditional">
+      <div class="delete right">
+        <i class="fa fa-trash fa-lg"></i>
+      </div>
+      <div class="chevron right">
+        <i class="fa fa-chevron-down fa-lg"></i>
+      </div>
+      <div class="chevron right">
+        <i class="fa fa-chevron-up fa-lg"></i>
+      </div>
+    </div>
+
+    <div class="add centered columns">
+      <i class="fa fa-plus"></i>
+      <span>Add Question</span>
+    </div>
+  </div>
+
+  <div class="options columns">
+    <i class="fa fa-circle-o"></i>
+    <input type="text" name="option" placeholder="Option 2">
+    <i class="fa fa-close"></i>
+  </div>
+  <div class="conditional-check columns">
+    <label><input type="checkbox" name="conditional" value="conditional"><span>Conditional</span></label>
+  </div>
+  <div class="options-button columns">
+    <i class="fa fa-circle-o"></i>
+    Add Option
+  </div>
+
+  <div class="delete right">
+    <i class="fa fa-trash fa-lg"></i>
+  </div>
+  <div class="chevron right">
+    <i class="fa fa-chevron-down fa-lg"></i>
+  </div>
+  <div class="chevron right">
+    <i class="fa fa-chevron-up fa-lg"></i>
+  </div>
+</div>
+-->
