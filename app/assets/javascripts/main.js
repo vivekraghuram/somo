@@ -362,26 +362,43 @@ $(document).on('ready', function() {
   /** SUBMISSION **/
   // remember to remove options if the question is a short answer
   // remember to remove the null questions from array
+  function nextLetter(s){
+    return s.replace(/([a-zA-Z])[^a-zA-Z]*$/, function(a){
+      var c= a.charCodeAt(0);
+      switch(c){
+        case 90: return 'A';
+        case 122: return 'a';
+        default: return String.fromCharCode(++c);
+      }
+    });
+  }
+
   function submitForm() {
     console.log("Stuff is happening");
     var finalQuestions = [];
+    var questionNum = 1;
     for (var i = 0; i < formObject.questions.length; i++) {
       if (!!formObject.questions[i]) { // if the question is not null
+        formObject.questions[i].qname = "Question " + questionNum;
 
-        if (formObject.questions[i].type == "short_answer") {
+        if (formObject.questions[i].questionType == "short_answer") {
           formObject.questions[i].options = null;
-        } else if (formObject.questions[i].type == "conditional") {
+        } else if (formObject.questions[i].questionType == "conditional") {
 
+          var questionLetter = 'a';
           for (var j = 0; j < formObject.questions[i].options.length; j++) {
             if (formObject.questions[i].options[j].questions.length > 0) {
 
               var finalSubQuestions = [];
               for (var k = 0; k < formObject.questions[i].options[j].questions.length; k++) {
                 if(!!formObject.questions[i].options[j].questions[k]) { // if question is not null
-                  if (formObject.questions[i].options[j].questions[k].type == "short_answer") {
+                  formObject.questions[i].options[j].questions[k].qname = "Question " + questionNum + questionLetter;
+
+                  if (formObject.questions[i].options[j].questions[k].questionType == "short_answer") {
                     formObject.questions[i].options[j].questions[k].options = null;
                   }
                   finalSubQuestions.push(formObject.questions[i].options[j].questions[k]);
+                  questionLetter = nextLetter(questionLetter);
                 }
               }
               formObject.questions[i].options[j].questions = finalSubQuestions;
@@ -391,6 +408,7 @@ $(document).on('ready', function() {
         }
 
         finalQuestions.push(formObject.questions[i]);
+        questionNum++;
       }
     }
 
