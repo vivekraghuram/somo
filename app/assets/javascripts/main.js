@@ -423,9 +423,16 @@ $(document).on('ready', function() {
       contentType: 'application/json',
       data : JSON.stringify(formObject)
     }).done(function() {
-      alert("Success!");
-    }).fail(function() {
-      alert("failure...");
+      $("#error-msg").remove();
+      $("form").after('<div class="error-msg" id="error-msg" style="background-color:#72D3A7">' +
+         'Success!' +
+      '</div>');
+      window.location.href = "/";
+    }).fail(function(msg) {
+      $("#error-msg").remove();
+      $("form").after('<div class="error-msg" id="error-msg">' +
+         JSON.parse(msg.responseText).errors +
+      '</div>');
     });
   }
 
@@ -460,5 +467,25 @@ $(document).on('ready', function() {
     if (allGood) {
       $("#error-msg").remove();
     }
+  });
+
+  $("#send-twilio-num").on("click", function() {
+    var twilioData = {"form": $("#form-name").data("fid"), "phone": $("#phonenumbers").val().replace(/\D/g,'') };
+    console.log(twilioData);
+    $.ajax({
+      type : "POST",
+      url :  '/twilio/start',
+      dataType: 'json',
+      contentType: 'application/json',
+      data : JSON.stringify(twilioData)
+    }).done(function() {
+      $("#error-msg").remove();
+      $("form").after('<div class="error-msg" id="error-msg" style="background-color:#72D3A7">' +
+         'Success!' +
+      '</div>');
+      window.location.href = "/";
+    }).fail(function() {
+      alert("Looks like something went wrong. Please check your internet connection.");
+    });
   });
 });

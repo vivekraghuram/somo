@@ -6,12 +6,12 @@ class TwilioController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   @@twilio_number = '+14085164672'
-  @@account_sid = 'ACc5f882e1e4d40eb6e854830f67a20643' 
+  @@account_sid = 'ACc5f882e1e4d40eb6e854830f67a20643'
   @@auth_token = '6e6cdc5b174ee4a0ae0ef8ac7854a2d6'
 
   @@survey_start = 'Welcome to Somo surveys: reply BEGIN to start, and FINISH to stop'
   @@survey_end = 'Thank you for using Somo surveys'
- 
+
   @@abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
   def start
@@ -21,7 +21,7 @@ class TwilioController < ApplicationController
     drive_init(form, ("+" + params[:phone]))
     render :nothing => true
   end
-  
+
   def status
     puts params
   end
@@ -111,7 +111,7 @@ class TwilioController < ApplicationController
         abc[0] = ""
       end
       if question.questionType == "multiple_choice" || question.questionType == "conditional"
-        response += "\n\nRespond with a single letter ex: B" 
+        response += "\n\nRespond with a single letter ex: B"
       elsif question.questionType == "checkbox"
         response += "\n\nRespond with one or more letters ex: AC"
       else
@@ -141,7 +141,7 @@ class TwilioController < ApplicationController
       value = value.upcase.gsub(/[^A-Z]/, "")
       if value.length > 1
         return false
-      end 
+      end
       index = abc.index(value)
       if index.nil? or (index + 1) > options.length
         return false
@@ -154,7 +154,7 @@ class TwilioController < ApplicationController
   def drive_save(form, question, value, phone_number)
     session = GoogleDrive.saved_session("config.json")
     worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
-    
+
     # Find Row
     row = 0
     (2..worksheet.num_rows).each do |r|
@@ -198,9 +198,9 @@ class TwilioController < ApplicationController
     puts body
     # Test creds
     #account_sid = 'AC6016613046133ebde46069a02581cc7e'
-    #auth_token = '8a45795f032cb5fd0b5f0567b58951be' 
-     
-    @client = Twilio::REST::Client.new @@account_sid, @@auth_token  
+    #auth_token = '8a45795f032cb5fd0b5f0567b58951be'
+
+    @client = Twilio::REST::Client.new @@account_sid, @@auth_token
     @client.account.messages.create({
       from: @@twilio_number,
       to: number,
