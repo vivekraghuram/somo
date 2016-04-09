@@ -28,13 +28,14 @@ class TwilioController < ApplicationController
     if params[:SmsStatus] == "received"
       response_number = params[:From]
       response_body = params[:Body].strip.upcase
+      puts "reponse " + response_number + " " + response_body
       ts = TwilioState.find_by phone: response_number
         
       if !ts.blank? and         
         if response_body == "END" or ts.state != TwilioState.states[:stopped] # END
           ts.state = TwilioState.states[:stopped]
           ts.save
-          response_body = @@survey_end 
+          response_body = @@survey_end
         elsif ts.state == TwilioState.states[:welcome] # WELCOME
           if response_body == "BEGIN"
             ts.state = TwilioState.states[:questioning]
