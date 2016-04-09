@@ -423,10 +423,16 @@ $(document).on('ready', function() {
       contentType: 'application/json',
       data : JSON.stringify(formObject)
     }).done(function() {
-      alert("Success!");
+      $("#error-msg").remove();
+      $("form").after('<div class="error-msg" id="error-msg" style="background-color:#72D3A7">' +
+         'Success!' +
+      '</div>');
       window.location.href = "/";
-    }).fail(function() {
-      alert("Looks like something went wrong. Please check your internet connection.");
+    }).fail(function(msg) {
+      $("#error-msg").remove();
+      $("form").after('<div class="error-msg" id="error-msg">' +
+         JSON.parse(msg.responseText).errors +
+      '</div>');
     });
   }
 
@@ -473,7 +479,10 @@ $(document).on('ready', function() {
       contentType: 'application/json',
       data : JSON.stringify(twilioData)
     }).done(function() {
-      alert("Success!");
+      $("#error-msg").remove();
+      $("form").after('<div class="error-msg" id="error-msg" style="background-color:#72D3A7">' +
+         'Success!' +
+      '</div>');
       window.location.href = "/";
     }).fail(function() {
       alert("Looks like something went wrong. Please check your internet connection.");
