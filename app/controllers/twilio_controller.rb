@@ -97,7 +97,7 @@ class TwilioController < ApplicationController
   def construct_question(question) # returns body of message
     abc = @@abc.dup
     puts "question: " + question.questionType
-    options = Option.find_all(question: question)
+    options = Option.where(question_id: question.id)
     response = question.text + "\n"
     if question.questionType != "short_answer"
       options.each do |option|
