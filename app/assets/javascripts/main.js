@@ -275,7 +275,7 @@ $(document).on('ready', function() {
             '<input type="text" name="option" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '" data-qindex="' + qindex + '">' +
           '</div>'
         );
-        formObject.questions[qindex].options.push(null);
+        formObject.questions[qindex].options.push({"value": null});
         break;
       case "checkbox":
         $(this).before(
@@ -284,7 +284,7 @@ $(document).on('ready', function() {
             '<input type="text" name="option" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '" data-qindex="' + qindex + '">' +
           '</div>'
         );
-        formObject.questions[qindex].options.push(null);
+        formObject.questions[qindex].options.push({"value": null});
         break;
       case "conditional":
         $(this).before(
@@ -310,11 +310,7 @@ $(document).on('ready', function() {
   function editOption() {
     var qindex = parseInt($(this).data("qindex"));
     var oindex = parseInt($(this).data("oindex"));
-    if($(this).attr("name") == "option") {
-      formObject.questions[qindex].options[oindex] = $(this).val();
-    } else {
-      formObject.questions[qindex].options[oindex].value = $(this).val();
-    }
+    formObject.questions[qindex].options[oindex].value = $(this).val();
   }
 
   function addSubOption() {
@@ -331,7 +327,7 @@ $(document).on('ready', function() {
             '<input type="text" name="option" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '-' + sup_qindex + '-' + sup_oindex + '" data-qindex="' + qindex + '"  data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '">' +
           '</div>'
         );
-        formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.push(null);
+        formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.push({"value": null});
         break;
       case "checkbox":
         $(this).before(
@@ -340,7 +336,7 @@ $(document).on('ready', function() {
             '<input type="text" name="option" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '-' + sup_qindex + '-' + sup_oindex + '" data-qindex="' + qindex + '"  data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '">' +
           '</div>'
         );
-        formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.push(null);
+        formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.push({"value": null});
         break;
       default:
         console.log("something went wrong.");
@@ -353,7 +349,7 @@ $(document).on('ready', function() {
     var oindex = parseInt($(this).data("oindex"));
     var sup_qindex = parseInt($(this).data("sup_qindex"));
     var sup_oindex = parseInt($(this).data("sup_oindex"));
-    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options[oindex] = $(this).val();
+    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options[oindex].value = $(this).val();
   }
 
   function moveOptionUp() {
