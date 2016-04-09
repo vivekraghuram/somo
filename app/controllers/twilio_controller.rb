@@ -17,7 +17,7 @@ class TwilioController < ApplicationController
   def start
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
-    TwilioState.create(phone: ("+" + params[:phone]), state: TwilioState.states[:welcome], form: form)
+    TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form)
     render :nothing => true
   end
   
@@ -33,16 +33,16 @@ class TwilioController < ApplicationController
       ts = TwilioState.find_by phone: response_number
       puts ts.state
       if !ts.blank? and         
-        if response_body == "finish" or ts.state == :stopped # END
+        if response_body == "finish" or ts.state == 2 # END
           puts "recieved end of in stopped state"
           ts.state = TwilioState.states[:stopped]
           ts.destroy
           response_body = @@survey_end
-        elsif ts.state == :welcome # WELCOME
+        elsif ts.state == 0 # WELCOME
           puts "in welcome state"
           if response_body == "BEGIN"
             puts "recieved begin"
-            ts.state = TwilioState.states[:questioning]
+            ts.state += 1
             ts.question = Question.find_by(id: ts.form.firstQuestion, form: ts.form)
             ts.save
             response_body = construct_question(ts.question)
@@ -51,7 +51,7 @@ class TwilioController < ApplicationController
             puts "USER welcomed and not started"
             response_body = @@survey_start
           end
-        elsif ts.state == :questioning # QUESTIONING
+        elsif ts.state == 1 # QUESTIONING
           puts "in questioning state"
           if answers_question(response_body, ts.question)
             puts "correctly answers question"
@@ -66,7 +66,7 @@ class TwilioController < ApplicationController
             nextQ = opt.nextQuestion
             if nextQ.nil? # at END of survey
               puts "no next question"
-              ts.state = TwilioState.states[:stopped]
+              ts.state += 1
               ts.save
               response_body = @@survey_end 
             else
@@ -83,7 +83,9 @@ class TwilioController < ApplicationController
         end
       else # Number not found - DEFAULT last created form
         response_body = @@survey_start
-        TwilioState.create(phone: response_number, state: TwilioState.states[:questioning], form: Form.last)
+        ts = TwilioState.find_or_create_by(phone: response_number)
+        ts.update_attributes(state: 0, form: Form.last)
+        ts.save
       end
       send_twilio(response_number, response_body)
     else # Twilio api returned not recieved response
