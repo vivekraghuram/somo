@@ -33,12 +33,12 @@ class TwilioController < ApplicationController
       ts = TwilioState.find_by phone: response_number
       puts ts.state
       if !ts.blank? and         
-        if response_body == "END" or ts.state == TwilioState.states[:stopped] # END
+        if response_body == "END" or ts.state == :stopped # END
           puts "recieved end of in stopped state"
           ts.state = TwilioState.states[:stopped]
           ts.destroy
           response_body = @@survey_end
-        elsif ts.state == TwilioState.states[:welcome] # WELCOME
+        elsif ts.state == :welcome # WELCOME
           puts "in welcome state"
           if response_body == "BEGIN"
             puts "recieved begin"
@@ -51,7 +51,7 @@ class TwilioController < ApplicationController
             puts "USER welcomed and not started"
             response_body = @@survey_start
           end
-        elsif ts.state == TwilioState.states[:questioning] # QUESTIONING
+        elsif ts.state == :questioning # QUESTIONING
           puts "in questioning state"
           if answers_question(response_body, ts.question)
             puts "correctly answers question"
