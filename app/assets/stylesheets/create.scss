@@ -2,6 +2,59 @@
 	margin-top: 40px;
 }
 
+.survey {
+	margin-bottom: 60px;
+}
+
 .custom-option {
 	color: red;
+}
+
+.options {
+	margin-left: 20px;
+	margin-bottom: 0;
+}
+
+.delete {
+	padding: 5px 9px 6px 9px;
+	border-radius: 3px;
+	transition: all 0.5s;
+}
+
+.delete:hover {
+	cursor: pointer;
+	background-color: #E6E6E6;
+}
+
+.required {
+	margin-top: 20px;
+}
+
+.short {
+	margin-left: 20px;
+	margin-bottom: 0;
+	background-color: #F4F4F4;
+	padding: 8px;
+	color: #808080;
+}
+
+.conditional-check {
+	margin-left: 40px;
+}
+
+.add {
+	margin-top: 20px;
+	cursor: pointer;
+	border-radius: 20px;
+	background-color: #808080;
+	padding: 10px 20px 10px 20px;
+
+	span{
+		color: #E6E6E6;
+	}
+
+	i {
+		color: #E6E6E6;
+		margin-right: 4px;
+	}
 }
