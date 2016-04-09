@@ -96,7 +96,8 @@ class TwilioController < ApplicationController
 
   def construct_question(question) # returns body of message
     abc = @@abc.dup
-    options = Option.find_by(question: question)
+    puts "question: " + question.questionType
+    options = Option.find_all(question: question)
     response = question.text + "\n"
     if question.questionType != "short_answer"
       options.each do |option|
@@ -113,6 +114,7 @@ class TwilioController < ApplicationController
     else
       response += "\n\nRespond with a short answer (max 120 characters)"
     end
+    puts "response: " + response
     return response
   end
 
