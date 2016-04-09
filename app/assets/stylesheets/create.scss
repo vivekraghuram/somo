@@ -75,26 +75,29 @@
 	margin-top: 20px;
 	cursor: pointer;
 	border-radius: 20px;
-	background-color: #85BEAA;
 	padding: 10px 20px 10px 20px;
 	transition: all 0.5s;
 
 	span{
-		color: #E6E6E6;
+		color: #B3B3B3;
+		transition: all 0.5s;
 	}
 
 	i {
-		color: #E6E6E6;
+		color: #B3B3B3;
 		margin-right: 4px;
+		transition: all 0.5s;
 	}
 }
 
 .add:hover {
-	background-color: #648F80;
-}
+	span {
+		color: #648F80;
+	}
 
-.add:active {
-	margin-top: 22px;
+	i {
+		color: #648F80;
+	}
 }
 
 .conditional-q {
@@ -126,4 +129,69 @@
 
 .icons-conditional {
 	margin-right: 30px;
+}
+
+.short-icons {
+	padding: 0 !important;
+	margin-top: 20px;
+}
+
+.cancel {
+	margin-top: 20px;
+	cursor: pointer;
+	border: 3px solid #85BEAA;
+	padding: 10px 20px 10px 20px;
+	transition: all 0.5s;
+	text-align: center;
+
+	span{
+		color: #85BEAA;
+		font-size: 16px;
+		transition: all 0.5s;
+	}
+}
+
+.cancel:hover {
+	background-color: #85BEAA;
+
+	span {
+		color: #E6E6E6;	
+	}
+}
+
+.cancel:active {
+	margin-top: 22px;
+	background-color: #648F80;
+	border: 3px solid #648F80;
+}
+
+.finish {
+	margin-top: 20px;
+	margin-left: 20px;
+	cursor: pointer;
+	border: 3px solid #85BEAA;
+	background-color: #85BEAA;
+	padding: 10px 20px 10px 20px;
+	transition: all 0.5s;
+	text-align: center;
+
+	span{
+		color: #E6E6E6;
+		font-size: 16px;
+		transition: all 0.5s;
+	}
+}
+
+.finish:hover {
+	background-color: #648F80;
+	border: 3px solid #648F80;
+}
+
+.finish:active {
+	margin-top: 22px;
+}
+
+.finish-cancel {
+	background-color: transparent !important;
+	padding: 0 !important;
 }
