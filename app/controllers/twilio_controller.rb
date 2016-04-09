@@ -76,6 +76,7 @@ class TwilioController < ApplicationController
               response_body = construct_question(ts.question)
             end
           else # RESEND
+            puts "doesn't answer question"
             response_body = construct_question(ts.question)
           end
         else # state not in enum
@@ -98,6 +99,7 @@ class TwilioController < ApplicationController
     abc = @@abc.dup
     puts "question: " + question.questionType
     options = Option.where(question_id: question.id)
+    
     response = question.text + "\n"
     if question.questionType != "short_answer"
       options.each do |option|
