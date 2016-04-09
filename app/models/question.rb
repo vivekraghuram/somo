@@ -1,4 +1,4 @@
 class Question < ActiveRecord::Base
-  has_many :questions
-  belongs_to :question
+  has_many :options
+  belongs_to :form
 end
