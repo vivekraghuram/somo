@@ -18,6 +18,7 @@ class TwilioController < ApplicationController
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
     TwilioState.create(phone: ("+" + params[:phone]), state: TwilioState.states[:welcome], form: form)
+    render :nothing => true
   end
   
   def status
@@ -78,6 +79,7 @@ class TwilioController < ApplicationController
     else # Twilio api returned not recieved response
       puts "was not recieved"
     end
+    render :nothing => true
   end
 
   def construct_question(question) # returns body of message
