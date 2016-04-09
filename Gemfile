@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+gem 'foundation-rails', '~> 5.5.3.2'
+
+gem 'font-awesome-sass', '~> 4.5.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
