@@ -132,6 +132,7 @@ class TwilioController < ApplicationController
     elsif question.questionType == "checkbox"
       value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
         index = abc.index(choice)
+        puts index + ' ' + options.length
         if index.nil? or (index + 1) > options.length
           return false
         end
@@ -139,9 +140,11 @@ class TwilioController < ApplicationController
       end
     elsif question.questionType == "multiple_choice" || question.questionType == "conditional"
       value = value.upcase.gsub(/[^A-Z]/, "")
+      puts value
       if value.length > 1
         return false
       end
+      puts index + " " + options.length
       index = abc.index(value)
       if index.nil? or (index + 1) > options.length
         return false
