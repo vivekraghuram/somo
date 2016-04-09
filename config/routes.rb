@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 
   get 'create' => 'application#create'
   #get 'twilio' => 'twilio#send'
-  post 'twilo/receive' => 'twilio/recieve'
-
+  post '/twilio/recieve' => 'twilio#recieve'
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
