@@ -177,11 +177,11 @@ class TwilioController < ApplicationController
     #account_sid = 'AC6016613046133ebde46069a02581cc7e'
     #auth_token = '8a45795f032cb5fd0b5f0567b58951be' 
      
-    #@client = Twilio::REST::Client.new @@account_sid, @@auth_token  
-    #@client.account.messages.create({
-    #  from: @@twilio_number,
-    #  to: number,
-    #  body: body
-    #})
+    @client = Twilio::REST::Client.new @@account_sid, @@auth_token  
+    @client.account.messages.create({
+      from: @@twilio_number,
+      to: number,
+      body: body
+    })
   end
 end
