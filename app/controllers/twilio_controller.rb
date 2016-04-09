@@ -44,7 +44,7 @@ class TwilioController < ApplicationController
             ts.state += 1
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
-            twilio_send(response_number, ts.form.intro)
+            send_twilio(response_number, ts.form.intro)
             response_body = construct_question(ts.question)
             #drive_init(ts.form, response_number)
           else # USER welcomed and !start
