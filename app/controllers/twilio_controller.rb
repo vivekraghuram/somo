@@ -45,8 +45,8 @@ class TwilioController < ApplicationController
             ts.state += 1
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
-            response_body = construct_question(ts.question)
-            drive_init(form, response_number)
+            response_body = ts.form.intro #construct_question(ts.question)
+            #drive_init(ts.form, response_number)
           else # USER welcomed and !start
             puts "USER welcomed and not started"
             response_body = @@survey_start
@@ -55,7 +55,7 @@ class TwilioController < ApplicationController
           puts "in questioning state"
           if answers_question(response_body, ts.question)
             puts "correctly answers question"
-            drive_save(form, ts.question, response_body, response_number)
+            drive_save(ts.form, ts.question, response_body, response_number)
             if ts.question.questionType == "short_answer" # short answer value blank
               puts "answered short answer"
               opt = Option.find_by(question: ts.question, value: "")
