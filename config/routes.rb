@@ -6,9 +6,10 @@ Rails.application.routes.draw do
   root 'application#home'
 
   get 'create' => 'application#create'
-  #get 'twilio' => 'twilio#send'
-  post '/twilio/recieve' => 'twilio#recieve'
   
+  post '/twilio/recieve' => 'twilio#recieve'
+  post '/twilio/start' => 'twilio#start'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
