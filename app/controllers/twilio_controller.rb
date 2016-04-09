@@ -111,13 +111,13 @@ class TwilioController < ApplicationController
       #  abc[0] = ""
       #end
       response += "\nA: very well\nB: somewhat\nC: very poor"
-      if question.questionType == "multiple_choice" || question.questionType == "conditional"
-        response += "\n\nRespond with a single letter ex: B"
-      elsif question.questionType == "checkbox"
-        response += "\n\nRespond with one or more letters ex: AC"
-      else
-        puts "unknown question type"
-      end
+      #if question.questionType == "multiple_choice" || question.questionType == "conditional"
+      response += "\n\nRespond with a single letter ex: B"
+      #elsif question.questionType == "checkbox"
+      #  response += "\n\nRespond with one or more letters ex: AC"
+      #else
+      #  puts "unknown question type"
+      #end
     else
       response += "\n\nRespond with a short answer (max 120 characters)"
     end
