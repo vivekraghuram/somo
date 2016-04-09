@@ -4,7 +4,8 @@ class TwilioController < ApplicationController
   #before_action :get_twilio_client
   
   def recieve
-    puts params     
+    puts params
+    puts "HELLO"
     # Real Credits
     account_sid = 'ACc5f882e1e4d40eb6e854830f67a20643' 
     auth_token = '6e6cdc5b174ee4a0ae0ef8ac7854a2d6'
