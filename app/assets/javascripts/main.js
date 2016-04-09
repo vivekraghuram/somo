@@ -60,45 +60,6 @@ $(document).on('ready', function() {
     $("#" + question_id).find(".question-type-select").trigger("change");
   }
 
-  function addConditionalQuestion(event) {
-    if (formObject.questions.length > questionMaxNum) {
-      // warn that form is too long
-    }
-    var sup_qindex = parseInt($(this).data("qindex"));
-    var sup_oindex = parseInt($(this).data("oindex"));
-    var qindex = formObject.questions
-    var question_id = 'sub_question_' + qindex;
-    $(this).after(
-      '<div class="row question" id="' + question_id + '">' +
-        '<div class="q-header columns small-8 large-8">' +
-          '<input type="text" name="question" placeholder="Untitled Question" class="question-title" data-qindex="' + qindex + '">' +
-          '<hr>' +
-        '</div>' +
-        '<div class="drop-down columns small-4 large-4 type-select">' +
-          '<select class="custom-drop question-type-select" data-qindex="' + qindex + '">' +
-            '<option value="multiple_choice">Multiple Choice</option>' +
-            '<option value="checkbox">Checkboxes</option>' +
-            '<option value="short_answer">Short Answer</option>' +
-          '</select>' +
-        '</div>' +
-        '<div class="delete right" data-qindex="' + qindex + '">' +
-          '<i class="fa fa-trash fa-lg"></i>' +
-        '</div>' +
-        '<div class="chevron right">' +
-          '<i class="fa fa-chevron-down fa-lg"></i>' +
-        '</div>' +
-        '<div class="chevron right">' +
-          '<i class="fa fa-chevron-up fa-lg"></i>' +
-        '</div>' +
-      '</div>');
-    formObject.questions.push({"questionType": "multiple_choice", "text": null, "options": []});
-    $("#" + question_id).find(".question-type-select").on("change", changeTypeQuestion);
-    $("#" + question_id).find(".question-title").on("keyup", editQuestion);
-    $("#" + question_id).find(".delete").on("click", removeQuestion);
-
-    $("#" + question_id).find(".question-type-select").trigger("change");
-  }
-
   function removeQuestion() {
     // just null out entry in the question array
     var qindex = parseInt($(this).data("qindex"));
@@ -111,22 +72,6 @@ $(document).on('ready', function() {
       // warn that this is too long
     }
     formObject.questions[parseInt($(this).data("qindex"))].text = $(this).val();
-  }
-
-  function setConditionalQuestion() {
-    if ($(this).is(':checked')) {
-      $(this).after(
-        '<div class="conditional-q columns">' +
-          '<div class="add centered columns add-conditional-question">' +
-            '<i class="fa fa-plus"></i>' +
-            '<span>Add Question</span>' +
-          '</div>' +
-        '</div>'
-      );
-      $(this).parent().select(".add-conditional-question").on("click", function() {console.log("works!");});
-    } else {
-
-    }
   }
 
   function changeTypeQuestion() {
@@ -189,6 +134,125 @@ $(document).on('ready', function() {
     }
   }
 
+  function setConditionalQuestion() {
+    var conditional_id = "conditional-" + $(this).parent().attr("id");
+    var qindex = $(this).parent().data("qindex");
+    var oindex = $(this).parent().data("oindex");
+    if ($(this).is(':checked')) {
+      $(this).parent().after(
+        '<div class="conditional-q columns" id=' + conditional_id + '>' +
+          '<div class="add centered columns add-conditional-question" data-oindex="' + oindex + '" data-qindex="' + qindex + '">' +
+            '<i class="fa fa-plus"></i>' +
+            '<span>Add Question</span>' +
+          '</div>' +
+        '</div>'
+      );
+      $(this).parent().parent().find("#" + conditional_id).find(".add-conditional-question").on("click", addSubQuestion);
+    } else {
+      $(this).parent().parent().find("#" + conditional_id).remove();
+    }
+  }
+
+  function addSubQuestion(event) {
+    if (formObject.questions.length > questionMaxNum) {
+      // warn that form is too long
+    }
+    var sup_qindex = parseInt($(this).data("qindex"));
+    var sup_oindex = parseInt($(this).data("oindex"));
+    var qindex = formObject.questions[sup_qindex].options[sup_oindex].questions.length;
+    var question_id = sup_qindex + '-' + sup_oindex + 'sub_question_' + qindex;
+    $(this).before(
+      '<div class="row question" id="' + question_id + '" data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '" data-qindex="' + qindex + '">' +
+        '<div class="q-header columns small-8 large-8">' +
+          '<input type="text" name="question" placeholder="Untitled Question" class="question-title" data-qid="#' + question_id + '">' +
+          '<hr>' +
+        '</div>' +
+        '<div class="drop-down columns small-4 large-4 type-select">' +
+          '<select class="custom-drop question-type-select" data-qid="#' + question_id + '">' +
+            '<option value="multiple_choice">Multiple Choice</option>' +
+            '<option value="checkbox">Checkboxes</option>' +
+            '<option value="short_answer">Short Answer</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="delete right" data-qid="#' + question_id + '">' +
+          '<i class="fa fa-trash fa-lg"></i>' +
+        '</div>' +
+      '</div>');
+    formObject.questions[sup_qindex].options[sup_oindex].questions.push({"questionType": "multiple_choice", "text": null, "options": []});
+    $("#" + question_id).find(".question-type-select").on("change", changeTypeSubQuestion);
+    $("#" + question_id).find(".question-title").on("keyup", editSubQuestion);
+    $("#" + question_id).find(".delete").on("click", removeSubQuestion);
+
+    $("#" + question_id).find(".question-type-select").trigger("change");
+  }
+
+  function removeSubQuestion() {
+    // just null out entry in the question array
+    var question = $($(this).data("qid"));
+    var qindex = parseInt(question.data("qindex"));
+    var sup_qindex = parseInt(question.data("sup_qindex"));
+    var sup_oindex = parseInt(question.data("sup_oindex"));
+    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex] = null;
+    question.remove();
+  }
+
+  function editSubQuestion() {
+    var question = $($(this).data("qid"));
+    var qindex = parseInt(question.data("qindex"));
+    var sup_qindex = parseInt(question.data("sup_qindex"));
+    var sup_oindex = parseInt(question.data("sup_oindex"));
+    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].text = $(this).val();
+  }
+
+  function changeTypeSubQuestion() {
+    var question = $($(this).data("qid"));
+    var qindex = parseInt(question.data("qindex"));
+    var sup_qindex = parseInt(question.data("sup_qindex"));
+    var sup_oindex = parseInt(question.data("sup_oindex"));
+    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].questionType = $(this).val();
+    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options = [];
+    question.find(".responses").remove();
+    switch ($(this).val()) {
+      case "short_answer":
+        question.find(".type-select").first().after(
+          '<div class="responses">' +
+            '<div class="short columns small-11 large-11">' +
+              'Short Answer' +
+            '</div>' +
+          '</div>'
+        );
+        break;
+      case "checkbox":
+        question.find(".type-select").first().after(
+          '<div class="responses">' +
+            '<div class="options-button columns add-option" data-type="checkbox" data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '" data-qindex="' + qindex + '">' +
+              '<i class="fa fa-square-o fa-lg"></i>' +
+              'Add Option' +
+            '</div>' +
+            '<div></div>' +
+          '</div>'
+        );
+        question.find(".add-option").on("click", addSubOption);
+        question.find(".add-option").trigger("click");
+        break;
+      case "multiple_choice":
+        question.find(".type-select").first().after(
+          '<div class="responses">' +
+            '<div class="options-button columns add-option" data-type="multiple_choice" data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '" data-qindex="' + qindex + '">' +
+              '<i class="fa fa-circle-o"></i>' +
+              'Add Option' +
+            '</div>' +
+            '<div></div>' +
+          '</div>'
+        );
+        question.find(".add-option").on("click", addSubOption);
+        question.find(".add-option").trigger("click");
+        break;
+      default:
+        console.log("something went wrong.");
+    }
+  }
+
   function moveQuestionUp() {
 
   }
@@ -226,7 +290,7 @@ $(document).on('ready', function() {
             '<i class="fa fa-circle-o"></i>' +
             '<input type="text" name="option-conditional" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '" data-qindex="' + qindex + '">' +
           '</div>' +
-          '<div class="conditional-check columns" id="condition' + qindex +'-' + oindex + '">' +
+          '<div class="conditional-check columns" id="condition' + qindex + '-' + oindex + '" data-oindex="' + oindex + '" data-qindex="' + qindex + '">' +
             '<input type="checkbox" name="conditional" value="conditional" class="condition-check"><span>Conditional</span>' +
           '</div>'
         );
@@ -251,6 +315,44 @@ $(document).on('ready', function() {
     }
   }
 
+  function addSubOption() {
+    var questionType = $(this).data("type");
+    var qindex = parseInt($(this).data("qindex"));
+    var sup_qindex = parseInt($(this).data("sup_qindex"));
+    var sup_oindex = parseInt($(this).data("sup_oindex"));
+    var oindex = formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.length;
+    switch (questionType) {
+      case "multiple_choice":
+        $(this).before(
+          '<div class="options columns">' +
+            '<i class="fa fa-circle-o"></i>' +
+            '<input type="text" name="option" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '-' + sup_qindex + '-' + sup_oindex + '" data-qindex="' + qindex + '"  data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '">' +
+          '</div>'
+        );
+        formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.push(null);
+        break;
+      case "checkbox":
+        $(this).before(
+          '<div class="options columns">' +
+            '<i class="fa fa-square-o fa-lg"></i>' +
+            '<input type="text" name="option" placeholder="Option" data-oindex="' + oindex + '" id="option' + qindex +'-' + oindex + '-' + sup_qindex + '-' + sup_oindex + '" data-qindex="' + qindex + '"  data-sup_oindex="' + sup_oindex + '" data-sup_qindex="' + sup_qindex + '">' +
+          '</div>'
+        );
+        formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options.push(null);
+        break;
+      default:
+        console.log("something went wrong.");
+    }
+    $("#option" + qindex +'-' + oindex + '-' + sup_qindex + '-' + sup_oindex).on("keyup", editSubOption);
+  }
+
+  function editSubOption() {
+    var qindex = parseInt($(this).data("qindex"));
+    var oindex = parseInt($(this).data("oindex"));
+    var sup_qindex = parseInt($(this).data("sup_qindex"));
+    var sup_oindex = parseInt($(this).data("sup_oindex"));
+    formObject.questions[sup_qindex].options[sup_oindex].questions[qindex].options[oindex] = $(this).val();
+  }
 
   function moveOptionUp() {
 
