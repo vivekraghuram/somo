@@ -60,7 +60,7 @@ class FormsController < ApplicationController
                 end
               end
             else
-              option = option.new(question: question, value: " ", nextQuestion: last_qid)
+              option = Option.new(question: question, value: "c", nextQuestion: last_qid)
               if !option.save
                 render_json_message(:forbidden, errors: option.errors.full_messages)
                 return
