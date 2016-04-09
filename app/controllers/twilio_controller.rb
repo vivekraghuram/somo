@@ -144,8 +144,8 @@ class TwilioController < ApplicationController
       if value.length > 1
         return false
       end
-      puts index + " " + options.length
       index = abc.index(value)
+      puts index + " " + options.length
       if index.nil? or (index + 1) > options.length
         return false
       end
