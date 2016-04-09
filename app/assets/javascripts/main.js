@@ -424,8 +424,9 @@ $(document).on('ready', function() {
       data : JSON.stringify(formObject)
     }).done(function() {
       alert("Success!");
+      window.location.href = "/";
     }).fail(function() {
-      alert("failure...");
+      alert("Looks like something went wrong. Please check your internet connection.");
     });
   }
 

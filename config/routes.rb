@@ -6,8 +6,8 @@ Rails.application.routes.draw do
   root 'application#home'
 
   get 'create' => 'application#create'
-  get 'send_twilio' => 'application#send_twilio'
   get 'create_dev' => 'application#create_dev'
 
+  get '/forms/:id/twilio' , to: 'forms#twilio'
   post '/forms/create', to: 'forms#create'
 end

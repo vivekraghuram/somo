@@ -49,6 +49,10 @@ class FormsController < ApplicationController
     render_json_message(:ok, message: 'Form created!')
   end
 
+  def twilio
+    @f = Form.find_by_id(params[:id])
+  end
+
   private
 
   def create_params
