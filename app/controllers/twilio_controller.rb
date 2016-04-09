@@ -32,36 +32,45 @@ class TwilioController < ApplicationController
       puts "reponse " + response_number + " " + response_body
       ts = TwilioState.find_by phone: response_number
       puts ts == nil
-      puts "TW state: " + ts.state.to_s + " " + ts.question.id.to_s
       if !ts.blank? and         
         if response_body == "END" or ts.state != TwilioState.states[:stopped] # END
+          puts "recieved end of in stopped state"
           ts.state = TwilioState.states[:stopped]
           ts.destroy
           response_body = @@survey_end
         elsif ts.state == TwilioState.states[:welcome] # WELCOME
+          puts "in welcome state"
           if response_body == "BEGIN"
+            puts "recieved begin"
             ts.state = TwilioState.states[:questioning]
             ts.question = Question.find_by(id: ts.form.firstQuestion, form: ts.form)
             ts.save
             response_body = construct_question(ts.question)
             drive_init(form, response_number)
           else # USER welcomed and !start
+            puts "USER welcomed and not started"
             response_body = @@survey_start
           end
-        elsif ts.state == # QUESTIONING
+        elsif ts.state == TwilioState.states[:questioning] # QUESTIONING
+          puts "in questioning state"
           if answers_question(response_body, ts.question)
+            puts "correctly answers question"
             drive_save(form, ts.question, response_body, response_number)
             if ts.question.questionType == "short_answer" # short answer value blank
+              puts "answered short answer"
               opt = Option.find_by(question: ts.question, value: "")
             else
+              puts "values should match TODO"
               opt = Option.find_by(question: ts.question, value: response_body)
             end
             nextQ = opt.nextQuestion
             if nextQ.nil? # at END of survey
+              puts "no next question"
               ts.state = TwilioState.states[:stopped]
               ts.save
               response_body = @@survey_end 
-            else 
+            else
+              puts "there is a next question"
               ts.question = nextQ
               ts.save
               response_body = construct_question(ts.question)
