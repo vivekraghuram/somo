@@ -33,7 +33,7 @@ class TwilioController < ApplicationController
       ts = TwilioState.find_by phone: response_number
       puts ts == nil
       if !ts.blank? and         
-        if response_body == "END" or ts.state != TwilioState.states[:stopped] # END
+        if response_body == "END" or ts.state == TwilioState.states[:stopped] # END
           puts "recieved end of in stopped state"
           ts.state = TwilioState.states[:stopped]
           ts.destroy
