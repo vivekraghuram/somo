@@ -35,7 +35,6 @@ class TwilioController < ApplicationController
       if !ts.blank? and         
         if response_body == "finish" or ts.state == 2 # END
           puts "recieved end of in stopped state"
-          ts.state = TwilioState.states[:stopped]
           ts.destroy
           response_body = @@survey_end
         elsif ts.state == 0 # WELCOME
@@ -45,7 +44,8 @@ class TwilioController < ApplicationController
             ts.state += 1
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
-            response_body = ts.form.intro #construct_question(ts.question)
+            twilio_send(response_number, ts.form.intro)
+            response_body = construct_question(ts.question)
             #drive_init(ts.form, response_number)
           else # USER welcomed and !start
             puts "USER welcomed and not started"
