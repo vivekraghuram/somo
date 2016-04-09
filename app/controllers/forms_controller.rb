@@ -22,25 +22,25 @@ class FormsController < ApplicationController
                 cur_fid = followQuestion.id
                 follow_options = f[:options]
                 if !follow_options.nil?
-                  follow_options do |fo|
+                  follow_options.each do |fo|
                     if last_fid.nil?
                       follow_op = Option.create(question: followQuestion, value: fo[:value], nextQuestion: last_qid)
                     else
                       follow_op = Option.create(question: followQuestion, value: fo[:value], nextQuestion: last_fid)
+                    end
                   end
-                else # no follow options - just create one nil one that leads to next question
+                else
                   if last_fid.nil?
-                    follow_op = Option.create(question: followQuestion, value: " ", nextQuestion: last_qid)
+                    follow_op = Option.create(question: followQuestion, value: 'a', nextQuestion: last_qid)
                   else
-                    follow_op = Option.create(question: followQuestion, value: " ", nextQuestion: last_fid)
+                    follow_op = Option.create(question: followQuestion, value: 'b', nextQuestion: last_fid)
                   end
                 end
               end
-              # after all followups, link current option to the first follow up
               option = Option.create(question: question, value: o[:value], nextQuestion: cur_fid)
             end
           end
-        else # no options
+        else
           option = Option.create(question: question, value: " ", nextQuestion: last_qid)
         end
       end
