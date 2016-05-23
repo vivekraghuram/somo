@@ -22,8 +22,8 @@ class FormCreate extends React.Component {
     this.setState({intro: e.target.value});
   }
 
-  _updateQuestion = (index, data) => {
-    this.state.questions[index] = data;
+  _updateQuestion = (data) => {
+    this.state.questions[data.questionIndex] = data;
    }
 
   _deleteQuestion = (index) => {
