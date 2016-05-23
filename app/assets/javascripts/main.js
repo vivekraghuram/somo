@@ -1,5 +1,7 @@
 $(document).on('ready', function() {
 
+  //return; // Added in to disable this file
+
   /** MAGIC NUMBERS **/
   var introMaxLength = 100;
   var questionMaxLength = 60;
@@ -416,6 +418,7 @@ $(document).on('ready', function() {
 
 
     console.log(JSON.stringify(formObject));
+    return;
     $.ajax({
       type : "POST",
       url :  'forms/create',
