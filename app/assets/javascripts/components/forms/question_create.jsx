@@ -146,20 +146,20 @@ class MultipleChoiceCreate extends React.Component {
     };
 
     if (this.state.options.length == 0) {
-      this.state.options.push({value : ""});
+      this.state.options.push({value : null});
     }
   }
 
   _optionIcon = () => {return "fa fa-circle-o"};
 
-  _updateOption = (index, e) => {
+  _updateValue = (index, e) => {
     this.state.options[index].value = e.target.value;
     this.props.handleUpdate(this.state);
     this.forceUpdate();
   }
 
   _addOption = () => {
-    this.state.options.push({value : ""});
+    this.state.options.push({value : null});
     this.forceUpdate();
   }
 
@@ -171,7 +171,7 @@ class MultipleChoiceCreate extends React.Component {
                name="option"
                placeholder="Option"
                value={this.state.options[index].value}
-               onChange={this._updateOption.bind(this, index)} />
+               onChange={this._updateValue.bind(this, index)} />
       </div>
     );
   }
@@ -205,17 +205,84 @@ class CheckboxCreate extends MultipleChoiceCreate {
   _optionIcon = () => {return "fa fa-square-o fa-lg"};
 }
 
+CheckboxCreate.propTypes = {
+    initial_options  : React.PropTypes.array.isRequired,
+    handleUpdate     : React.PropTypes.func.isRequired,
+};
 
 
-class ConditionalCreate extends React.Component {
+
+class ConditionalCreate extends MultipleChoiceCreate {
   constructor(props) {
     super(props);
     this.state = {
-      options : [],
+      options     : [],
     };
+
+    if (this.state.options.length == 0) {
+      this.state.options.push({
+        value       : null,
+        conditional : false,
+        questions   : [],
+      });
+    }
   }
 
-  render() {
-    return (<span>Nothing to see here</span>);
+  _addOption = () => {
+    this.state.options.push({
+      value       : null,
+      conditional : false,
+      questions   : [],
+    });
+    this.forceUpdate();
   }
+
+  _updateConditional = (index, e) => {
+    this.state.options[index].conditional = e.target.checked;
+    this.props.handleUpdate(this.state);
+    this.forceUpdate();
+  }
+
+  _updateQuestions = (index, data) => {
+    this.state.options[index].questions = data.questions;
+    this.props.handleUpdate(this.state);
+    // I don't believe i need to force an update here...
+  }
+
+  _addOption = () => {
+    this.state.options.push({value : null});
+    this.forceUpdate();
+  }
+
+  _renderConditionalForm = (index) => {
+    if (this.state.options[index].conditional) {
+      return <ConditionalFormCreate initial_state={{questions: this.state.options[index].questions}}
+                                    handleUpdate={this._updateQuestions.bind(this, index)} />
+    }
+  }
+
+  _renderOption = (option, index, arr) => {
+    return (
+      <div key={index}>
+        <div className="options columns">
+          <i className={this._optionIcon()}></i>
+          <input type="text"
+                 name="option"
+                 placeholder="Option"
+                 value={this.state.options[index].value}
+                 onChange={this._updateValue.bind(this, index)} />
+        </div>
+        <div className="conditional-check columns">
+          <input type="checkbox"
+                 name="conditional"
+                 onChange={this._updateConditional.bind(this, index)}
+                 className="condition-check" />
+          <span>Conditional</span>
+        </div>
+        <div></div>
+        { this._renderConditionalForm(index) }
+      </div>
+    );
+  }
+
 }

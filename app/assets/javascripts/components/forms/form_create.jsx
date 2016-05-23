@@ -33,11 +33,11 @@ class FormCreate extends React.Component {
   }
 
   _swapUpQuestion = (index) => {
-    return;
+    console.log("Not implemented");
   }
 
   _swapDownQuestion = (index) => {
-    return;
+    console.log("Not implemented");
   }
 
   _addQuestion = (e) => {
