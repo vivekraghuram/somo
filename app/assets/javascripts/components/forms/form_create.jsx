@@ -77,10 +77,9 @@ class FormCreate extends React.Component {
     submission = {
       name      : this.state.name,
       intro     : this.state.intro,
-      questions : this.state.questions,
+      questions : this._prepareQuestions(this.state.questions),
     }
     console.log(JSON.stringify(submission));
-    return;
     $.ajax({
       type : "POST",
       url :  'forms/create',
@@ -89,9 +88,42 @@ class FormCreate extends React.Component {
       data : JSON.stringify(submission)
     }).done(function() {
       // Show success messages and redirect
+      console.log("success!");
     }).fail(function(msg) {
       // Show error messages
+      console.log("failure...");
     });
+  }
+
+  _prepareQuestions = (questions, prefix) => {
+    // form is this.state
+    prefix = prefix || "";
+    var nullIndices = [];
+    for (var i = 0; i < questions.length; i++) {
+      if (!!questions[i]) { // if the question is not null
+        questions[i].qname = "Question " + prefix + (i + 1);
+
+        if (questions[i].questionType == "short_answer") {
+          questions[i].options = null;
+        } else if (questions[i].questionType == "conditional") {
+          for (var j = 0; j < questions[i].options.length; j++) {
+            if (questions[i].options[j].questions.length > 0) {
+              questions[i].options[j].questions = this._prepareQuestions(questions[i].options[j].questions,
+                                                            prefix + (i + 1) + "-" + (j + 1) + ":");
+            }
+          }
+        }
+      } else {
+        nullIndices.push(i);
+      }
+    }
+
+    nullIndices.sort().reverse();
+    for (var i = 0; i < nullIndices.length; i++) {
+      questions.splice(nullIndices[i]);
+    }
+
+    return questions;
   }
 
   _renderQuestion = (question, index, array) => {
