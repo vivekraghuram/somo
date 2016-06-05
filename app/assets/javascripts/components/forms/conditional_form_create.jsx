@@ -38,7 +38,6 @@ class ConditionalFormCreate extends React.Component {
         return this._swapQuestion(q1, this.state.questions[index]);
       }
     }
-    console.log("failure swap up");
   }
 
   _swapDownQuestion = (index) => {
@@ -48,7 +47,6 @@ class ConditionalFormCreate extends React.Component {
         return this._swapQuestion(q1, this.state.questions[index]);
       }
     }
-    console.log("failure swap down");
   }
 
 

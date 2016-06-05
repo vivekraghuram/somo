@@ -12,18 +12,27 @@ class FormCreate extends React.Component {
       intro     : null,
       questions : [],
     };
+
+    this.state.saveState = "unsaved";
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.state.saveState = "unsaved";
   }
 
   _updateTitle = (e) => {
-    this.setState({name: e.target.value});
+    this.state.name = e.target.value;
+    this.forceUpdate();
   }
 
   _updateIntro = (e) => {
-    this.setState({intro: e.target.value});
+    this.state.intro = e.target.value;
+    this.forceUpdate();
   }
 
   _updateQuestion = (data) => {
     this.state.questions[data.questionIndex] = data;
+    this.forceUpdate();
    }
 
   _deleteQuestion = (index) => {
@@ -48,7 +57,6 @@ class FormCreate extends React.Component {
         return this._swapQuestion(q1, this.state.questions[index]);
       }
     }
-    console.log("failure swap up");
   }
 
   _swapDownQuestion = (index) => {
@@ -58,7 +66,6 @@ class FormCreate extends React.Component {
         return this._swapQuestion(q1, this.state.questions[index]);
       }
     }
-    console.log("failure swap down");
   }
 
   _addQuestion = (e) => {
@@ -80,6 +87,7 @@ class FormCreate extends React.Component {
       questions : this._prepareQuestions(this.state.questions),
     }
     console.log(JSON.stringify(submission));
+    let form = this;
     $.ajax({
       type : "POST",
       url :  'forms/create',
@@ -87,11 +95,12 @@ class FormCreate extends React.Component {
       contentType: 'application/json',
       data : JSON.stringify(submission)
     }).done(function() {
-      // Show success messages and redirect
-      console.log("success!");
+      form.state.saveState = "saved";
+      form.forceUpdate();
     }).fail(function(msg) {
-      // Show error messages
-      console.log("failure...");
+      alert("Something went wrong. \
+             We could not save your form. \
+             Please check your internet connection");
     });
   }
 
@@ -139,6 +148,28 @@ class FormCreate extends React.Component {
                            handleSwapDown = {this._swapDownQuestion} />;
   }
 
+  _renderSaveButton = () => {
+    if (this.state.name && this.state.intro) {
+      switch (this.state.saveState) {
+        // case "saving": Put a loading spinner for this case
+        case "saved":
+          return (
+            <div className = "finish columns right small-5 medium-3 large-2"
+                 onClick = {this._submitForm}>
+              <span>Saved <i className="fa fa-check"></i></span>
+            </div>
+          )
+        default:
+          return (
+            <div className = "finish columns right small-5 medium-3 large-2"
+                 onClick = {this._submitForm}>
+              <span>Save</span>
+            </div>
+          )
+      }
+    }
+  }
+
   render() {
     return (
       <div className = "container">
@@ -167,13 +198,10 @@ class FormCreate extends React.Component {
             <span>Add Question</span>
           </div>
           <div className = "row finish-cancel">
-            <div className = "finish columns right small-5 medium-3 large-2"
-                 onClick = {this._submitForm}>
-              <span>Finish</span>
-            </div>
+            { this._renderSaveButton() }
             <a href = "/">
-              <div className = "cancel columns right small-5 medium-3 large-2">
-                <span>Cancel</span>
+              <div className = "cancel columns right small-6 medium-4 large-3">
+                <span>Return to Dashboard</span>
               </div>
             </a>
           </div>
