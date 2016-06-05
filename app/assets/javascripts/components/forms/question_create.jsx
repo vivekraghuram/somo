@@ -18,18 +18,19 @@ class QuestionCreate extends React.Component {
   _updateText = (e) => {
     this.state.text = e.target.value;
     this.props.handleUpdate(this.state);
-    this.forceUpdate(); // setState was not updating the state immediately
+    this.forceUpdate();
   }
 
   _updateType = (e) => {
     // NOTE: we may want to only update the stuff that has changed
     this.state.questionType = e.target.value;
     this.props.handleUpdate(this.state);
-    this.forceUpdate(); // setState was not updating the state immediately
+    this.forceUpdate();
   }
 
   _updateOptions = (data) => {
-    this.setState(data);
+    this.state.options = data.options;
+    this.forceUpdate();
   }
 
   _deleteQuestion = (e) => {
@@ -38,12 +39,12 @@ class QuestionCreate extends React.Component {
   }
 
   _swapUp = (e) => {
-    console.log("Not implemented yet");
+    console.log(this.state);
     this.props.handleSwapUp(this.state.questionIndex);
+    this.forceUpdate();
   }
 
   _swapDown = (e) => {
-    console.log("Not implemented yet");
     this.props.handleSwapDown(this.state.questionIndex);
   }
 
@@ -101,7 +102,7 @@ class QuestionCreate extends React.Component {
             <i className = "fa fa-chevron-down fa-lg"></i>
           </div>
           <div className = "chevron right"
-               onClick = {this._swapUp} >>
+               onClick = {this._swapUp} >
             <i className = "fa fa-chevron-up fa-lg"></i>
           </div>
         </div>

@@ -7,7 +7,6 @@ class ConditionalFormCreate extends React.Component {
     this.state = props.initial_state || {
       questions : [],
     };
-    console.log(this.state);
   }
 
   _updateQuestion = (index, data) => {
@@ -17,18 +16,41 @@ class ConditionalFormCreate extends React.Component {
 
   _deleteQuestion = (index) => {
     this.state.questions[index] = null;
-    //this.state.questions.splice(question_id, 1);
+    this.props.handleUpdate(this.state);
+    this.forceUpdate();
+  }
+
+  _swapQuestion = (q1, q2) => {
+    this.state.questions[q1.questionIndex] = q2;
+    this.state.questions[q2.questionIndex] = q1;
+
+    var q1Index = q1.questionIndex;
+    q1.questionIndex = q2.questionIndex;
+    q2.questionIndex = q1Index;
     this.props.handleUpdate(this.state);
     this.forceUpdate();
   }
 
   _swapUpQuestion = (index) => {
-    console.log("Not implemented");
+    var q1 = this.state.questions[index];
+    while (--index >= 0) {
+      if (this.state.questions[index] != null) {
+        return this._swapQuestion(q1, this.state.questions[index]);
+      }
+    }
+    console.log("failure swap up");
   }
 
   _swapDownQuestion = (index) => {
-    console.log("Not implemented");
+    var q1 = this.state.questions[index];
+    while (++index < this.state.questions.length) {
+      if (this.state.questions[index] != null) {
+        return this._swapQuestion(q1, this.state.questions[index]);
+      }
+    }
+    console.log("failure swap down");
   }
+
 
   _addQuestion = (e) => {
     // This is the default type of a new question
@@ -42,7 +64,6 @@ class ConditionalFormCreate extends React.Component {
   }
 
   _renderQuestion = (question, index, array) => {
-    // TODO: Add initial state info here if available
     if (question == null) {
       return;
     }
