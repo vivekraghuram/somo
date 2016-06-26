@@ -1,0 +1,104 @@
+<div class="row new-button">
+  <a href="/create">
+    <div class="new right columns small-5 medium-5 large-2">
+      <span>New Survey</span>
+    </div>
+  </a>
+</div>
+
+<!--   CURRENT   -->
+<div class="row home-header">
+  <h5 class="survey-heading">CURRENT SURVEYS</h5>
+</div>
+
+<div class="current">
+  <% @forms.each do |f| %>
+    <div class="row survey-tile">
+      <div class="columns">
+        <div class="columns small-7 large-7">
+          <h2><%= f.name %></h2>
+        </div>
+        <div class="columns right small-5 large-5">
+          <%= link_to("/forms/#{f.id}/twilio") do %>
+            <div class="delete right">
+              <i class="fa fa-send fa-lg"></i>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row survey-tile">
+    <div class="columns">
+          <div class="columns small-7 large-7">
+            <h2>Stanley's CS Class</h2>
+          </div>
+          <div class="columns right small-5 large-5">
+            <div class="delete right">
+              <i class="fa fa-send fa-lg"></i>
+            </div>
+          </div>
+    </div>
+  </div>
+
+  <div class="row survey-tile">
+    <div class="columns">
+          <div class="columns small-7 large-7">
+            <h2>Social Entrepreneurs in Nairobi</h2>
+          </div>
+          <div class="columns right small-5 large-5">
+            <div class="delete right">
+              <i class="fa fa-send fa-lg"></i>
+            </div>
+          </div>
+    </div>
+  </div>
+
+  <div class="row survey-tile">
+    <div class="columns">
+          <div class="columns small-7 large-7">
+            <h2>Entrepreneur BootCamp Series Workshop 2</h2>
+          </div>
+          <div class="columns right small-5 large-5">
+            <div class="delete right">
+              <i class="fa fa-send fa-lg"></i>
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+
+<!--   SENT   -->
+<div class="row home-header">
+  <h5 class="survey-heading">SENT SURVEYS</h5>
+</div>
+
+<div class="sent">
+
+  <div class="row survey-tile">
+    <div class="columns">
+          <div class="columns small-7 large-7">
+            <h2>Entrepreneurship BootCamp Series Workshop 1</h2>
+          </div>
+          <div class="columns right small-5 large-5">
+            <div class="chevron right">
+              <i class="fa fa-line-chart fa-lg"></i>
+            </div>
+          </div>
+    </div>
+  </div>
+
+  <div class="row survey-tile">
+    <div class="columns">
+          <div class="columns small-7 large-7">
+            <h2>Yanna's Cooking Class</h2>
+          </div>
+          <div class="columns right small-5 large-5">
+            <div class="chevron right">
+              <i class="fa fa-line-chart fa-lg"></i>
+          </div>
+    </div>
+  </div>
+
+</div>

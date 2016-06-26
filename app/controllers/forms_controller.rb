@@ -235,6 +235,13 @@ class FormsController < ApplicationController
     @f = Form.find_by_id(params[:form_id])
   end
 
+  def take   
+    @form = Form.find_by_id(params[:form_id])
+  end
+
+  def submit
+  end
+
   private
 
   def create_questions(form, prev_question, questions)
