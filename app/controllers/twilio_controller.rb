@@ -129,6 +129,8 @@ class TwilioController < ApplicationController
   def answers_question(question, value)
     abc = @@abc.dup
     options = question.options
+    puts question
+    puts options
     if question.questionType == "short_answer"
       return true
     elsif question.questionType == "checkbox"
