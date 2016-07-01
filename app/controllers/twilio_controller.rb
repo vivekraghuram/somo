@@ -13,130 +13,136 @@ class TwilioController < ApplicationController
   @@survey_end = 'Thank you for using Somo surveys'
 
   @@abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  @@DEBUG = true
 
   def start
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
+    # TODO Check if Exists First
     TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form)
-    #drive_init(form, ("+" + params[:phone]))
+    drive_init(form, ("+" + params[:phone]))
     render :nothing => true
-  end
-
-  def status
-    puts params
   end
 
   def recieve
     if params[:SmsStatus] == "received"
       response_number = params[:From]
       response_body = params[:Body].strip.upcase
-      puts "reponse " + response_number + " " + response_body
+      if @@DEBUG
+        puts "reponse number: " + response_number.to_s + " body: " + response_body.to_s
+      end
       ts = TwilioState.find_by phone: response_number
-      puts ts.state
-      if !ts.blank? and         
+      if ts.blank? # Recieved Response without Number found
+        TwilioState.create(phone: response_number, state: 0, form: Form.last)
+        response_body = @@survey_start
+        if @@DEBUG
+          puts "Could not find number: " + response_number.to_s + " in db"
+        end
+      else
         if response_body == "FINISH" or ts.state == 2 # END
-          puts "recieved end of in stopped state"
-          ts.destroy
           response_body = @@survey_end
+          if @@DEBUG
+            puts "Survey Completed"
+          end
         elsif ts.state == 0 # WELCOME
-          puts "in welcome state"
           if response_body == "BEGIN"
-            puts "recieved begin"
-            ts.state += 1
+            ts.state = 1
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
             send_twilio(response_number, ts.form.intro)
             response_body = construct_question(ts.question)
-            #drive_init(ts.form, response_number)
+            drive_init(ts.form, response_number)
+            if @@DEBUG
+              puts "Sending First Question"
+            end
           else # USER welcomed and !start
-            puts "USER welcomed and not started"
             response_body = @@survey_start
+            if @@DEBUG
+              puts "User responsed to Survey Start with something other than Begin"
+            end
           end
         elsif ts.state == 1 # QUESTIONING
-          puts "in questioning state"
           if answers_question(ts.question, response_body)
-            puts "correctly answers question"
             drive_save(ts.form, ts.question, response_body, response_number)
             if ts.question.questionType == "short_answer" # short answer value blank
-              puts "answered short answer"
               opt = Option.find_by(question: ts.question, value: "")
             else
-              puts "values should match TODO"
               opt = Option.find_by(question: ts.question, value: response_body)
             end
-            nextQ = opt.nextQuestion
+            nextQ = Question.find(opt.nextQuestion)
             if nextQ.nil? # at END of survey
-              puts "no next question"
-              ts.state += 1
+              ts.state = 2
               ts.save
-              response_body = @@survey_end 
+              response_body = @@survey_end
+              if @@DEBUG
+                puts "Survey Complete"
+              end
             else
-              puts "there is a next question"
               ts.question = nextQ
               ts.save
               response_body = construct_question(ts.question)
+              if @@DEBUG
+                puts "Survey Continues with question: " + ts.question.id.to_s
+              end
             end
           else # RESEND
-            puts "doesn't answer question"
             response_body = construct_question(ts.question)
+            if @@DEBUG
+              puts "Invalid response resending question: " + ts.question.id.to_s
+            end
           end
         else # state not in enum
-          puts "error unknown state"
+          puts "ERROR: unknown state (someone is monkeying around in the db)"
         end
-      else # Number not found - DEFAULT last created form
-        response_body = @@survey_start
-        ts = TwilioState.find_or_create_by(phone: response_number)
-        ts.update_attributes(state: 0, form: Form.last)
-        ts.save
       end
       send_twilio(response_number, response_body)
     else # Twilio api returned not recieved response
-      puts "was not recieved"
+      puts "ERROR: was not recieved - invalid twilio response"
     end
     render :nothing => true
   end
 
   def construct_question(question) # returns body of message
+    if @@DEBUG
+      puts "contructing question: " + question.to_s
+    end
     abc = @@abc.dup
-    puts "question: " + question.questionType
-    options = question.options
-    
+    options = question.options 
     response = question.text + "\n"
-    return question.text + "\nA: very well\nB: somewhat\nC: very poor\n\nRespond with a single letter ex: B" 
+   # return question.text + "\nA: very well\nB: somewhat\nC: very poor\n\nRespond with a single letter ex: B" 
     if question.questionType != "short_answer"
-      puts "not short answer"
-      puts options
       options.each do |option|
-        puts option
         response += "\n" + abc[0].upcase + option.value
         abc[0] = ""
       end
-      response += "\nA: very well\nB: somewhat\nC: very poor"
+      #response += "\nA: very well\nB: somewhat\nC: very poor"
       if question.questionType == "multiple_choice" || question.questionType == "conditional"
       response += "\n\nRespond with a single letter ex: B"
       elsif question.questionType == "checkbox"
         response += "\n\nRespond with one or more letters ex: AC"
       else
-        puts "unknown question type"
+        puts "ERROR: unknown question type"
       end
     else
       response += "\n\nRespond with a short answer (max 120 characters)"
     end
-    puts "response: " + response
+    if @@DEBUG
+      puts "question: " + response
+    end
     return response
   end
 
   def answers_question(question, value)
+    if @@DEBUG
+      puts "answering question: " + question.to_s + " with value: " + value.to_s
+    end
     abc = @@abc.dup
     options = question.options
-    puts question
-    puts options
     if question.questionType == "short_answer"
       return true
     elsif question.questionType == "checkbox"
       value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
         index = abc.index(choice)
-        puts index + ' ' + options.length
         if index.nil? or (index + 1) > options.length
           return false
         end
@@ -144,7 +150,6 @@ class TwilioController < ApplicationController
       end
     elsif question.questionType == "multiple_choice" || question.questionType == "conditional"
       value = value.upcase.gsub(/[^A-Z]/, "")
-      puts value
       if value.length > 1
         return false
       end
@@ -201,9 +206,11 @@ class TwilioController < ApplicationController
   end
 
   def send_twilio(number, body)
-    puts "sending"
-    puts number
-    puts body
+    if @@DEBUG
+      puts "sending"
+      puts number
+      puts body
+    end
 
     @client = Twilio::REST::Client.new @@account_sid, @@auth_token
     @client.account.messages.create({
