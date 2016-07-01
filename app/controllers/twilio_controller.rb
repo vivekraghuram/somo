@@ -14,7 +14,7 @@ class TwilioController < ApplicationController
   @@survey_over = 'Your survey is over'
 
   @@abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  @@DEBUG = true
+  @@DEBUG = false
 
   def start
     form = Form.find(params[:form].to_i)
