@@ -11,6 +11,7 @@ class TwilioController < ApplicationController
 
   @@survey_start = 'Welcome to Somo surveys: reply BEGIN to start, and FINISH to stop'
   @@survey_end = 'Thank you for using Somo surveys'
+  @@survey_over = 'Your survey is over'
 
   @@abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   @@DEBUG = true
@@ -39,10 +40,15 @@ class TwilioController < ApplicationController
           puts "Could not find number: " + response_number.to_s + " in db"
         end
       else
-        if response_body == "FINISH" or ts.state == 2 # END
+        if ts.state == 2 # END
+          response_body = @@survey_over
+          if @@DEBUG
+            puts "Survey in finished state"
+          end
+        elsif response_body == "FINISH"
           response_body = @@survey_end
           if @@DEBUG
-            puts "Survey Completed"
+            puts "Survey Completed via FINISH Command"
           end
         elsif ts.state == 0 # WELCOME
           if response_body == "BEGIN"
