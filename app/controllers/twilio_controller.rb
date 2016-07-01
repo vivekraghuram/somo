@@ -20,7 +20,7 @@ class TwilioController < ApplicationController
     form = Form.find(params[:form].to_i)
     send_twilio(("+" + params[:phone]), @@survey_start)
     # TODO Check if Exists First
-    TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form)
+    TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form, alpha_index: 0)
     drive_init(form, ("+" + params[:phone]))
     render :nothing => true
   end
@@ -34,7 +34,7 @@ class TwilioController < ApplicationController
       end
       ts = TwilioState.find_by phone: response_number
       if ts.blank? # Recieved Response without Number found
-        TwilioState.create(phone: response_number, state: 0, form: Form.last)
+        TwilioState.create(phone: response_number, state: 0, form: Form.last, alpha_index: 0)
         response_body = @@survey_start
         if @@DEBUG
           puts "Could not find number: " + response_number.to_s + " in db"
@@ -56,7 +56,7 @@ class TwilioController < ApplicationController
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
             send_twilio(response_number, ts.form.intro)
-            response_body = construct_question(ts.question)
+            response_body = construct_question(ts)
             drive_init(ts.form, response_number)
             if @@DEBUG
               puts "Sending First Question"
@@ -68,13 +68,14 @@ class TwilioController < ApplicationController
             end
           end
         elsif ts.state == 1 # QUESTIONING
-          if answers_question(ts.question, response_body)
+          if answers_question(ts, response_body)
             if ts.question.questionType == "short_answer" # short answer value blank
               opt = Option.find_by(question: ts.question)
               drive_save(ts.form, ts.question, response_body, response_number)
             else
-              opt = ts.question.options[@@abc.dup.index(response_body)]
+              opt = ts.question.options[alpha_cycle(ts.alpha_index).index(response_body)]
               drive_save(ts.form, ts.question, opt.value, response_number)
+              ts.alpha_index = (ts.alpha_index + ts.question.options.length) % @@abc.size
             end
             if opt.nextQuestion.nil? # at END of survey
               ts.state = 2
@@ -84,14 +85,14 @@ class TwilioController < ApplicationController
               end
             else
               ts.question = Question.find(opt.nextQuestion)
-              response_body = construct_question(ts.question)
+              response_body = construct_question(ts)
               if @@DEBUG
                 puts "Survey Continues with question: " + ts.question.id.to_s
               end
             end
             ts.save
-          else # RESEND
-            response_body = construct_question(ts.question)
+          else # Doesn't answer question RESEND
+            response_body = construct_question(ts)
             if @@DEBUG
               puts "Invalid response resending question: " + ts.question.id.to_s
             end
@@ -107,23 +108,22 @@ class TwilioController < ApplicationController
     render :nothing => true
   end
 
-  def construct_question(question) # returns body of message
+  def construct_question(ts) # returns body of message
     if @@DEBUG
-      puts "contructing question: " + question.to_s
+      puts "contructing question: " + ts.question.to_s
     end
-    abc = @@abc.dup
-    options = question.options 
-    response = question.text + "\n"
-   # return question.text + "\nA: very well\nB: somewhat\nC: very poor\n\nRespond with a single letter ex: B" 
-    if question.questionType != "short_answer"
+    abc = alpha_cycle(ts.alpha_index)
+    options = ts.question.options
+    response = ts.question.text + "\n"
+    if ts.question.questionType != "short_answer"
+      # TODO More options than ABC's
       options.each do |option|
         response += "\n" + abc[0].upcase + ": " + option.value
         abc[0] = ""
       end
-      #response += "\nA: very well\nB: somewhat\nC: very poor"
-      if question.questionType == "multiple_choice" || question.questionType == "conditional"
+      if ts.question.questionType == "multiple_choice" || ts.question.questionType == "conditional"
       response += "\n\nRespond with a single letter ex: B"
-      elsif question.questionType == "checkbox"
+      elsif ts.question.questionType == "checkbox"
         response += "\n\nRespond with one or more letters ex: AC"
       else
         puts "ERROR: unknown question type"
@@ -137,15 +137,15 @@ class TwilioController < ApplicationController
     return response
   end
 
-  def answers_question(question, value)
+  def answers_question(ts, value)
     if @@DEBUG
-      puts "answering question: " + question.to_s + " with value: " + value.to_s
+      puts "answering question: " + ts.question.to_s + " with value: " + value.to_s
     end
-    abc = @@abc.dup
-    options = question.options
-    if question.questionType == "short_answer"
+    abc = alpha_cycle(ts.alpha_index)
+    options = ts.question.options
+    if ts.question.questionType == "short_answer"
       return true
-    elsif question.questionType == "checkbox"
+    elsif ts.question.questionType == "checkbox"
       value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
         index = abc.index(choice)
         if index.nil? or (index + 1) > options.length
@@ -153,19 +153,22 @@ class TwilioController < ApplicationController
         end
         return true
       end
-    elsif question.questionType == "multiple_choice" || question.questionType == "conditional"
+    elsif ts.question.questionType == "multiple_choice" || ts.question.questionType == "conditional"
       value = value.upcase.gsub(/[^A-Z]/, "")
       if value.length > 1
         return false
       end
       index = abc.index(value)
-      puts index.to_s + " " + options.length.to_s
       if index.nil? or (index + 1) > options.length
         return false
       end
       return true
     end
     return false
+  end
+
+  def alpha_cycle(index)
+    @@abc[index..@@abc.size] + @@abc[0..index-1]
   end
 
   def drive_save(form, question, value, phone_number)
