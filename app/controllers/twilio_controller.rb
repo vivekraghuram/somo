@@ -65,10 +65,12 @@ class TwilioController < ApplicationController
           if answers_question(ts.question, response_body)
             drive_save(ts.form, ts.question, response_body, response_number)
             if ts.question.questionType == "short_answer" # short answer value blank
-              opt = Option.find_by(question: ts.question, value: "")
+              opt = Option.find_by(question: ts.question)
             else
               opt = Option.find_by(question: ts.question, value: response_body)
             end
+            puts ts.question.id.to_s
+            puts opt.to_s
             nextQ = Question.find(opt.nextQuestion)
             if nextQ.nil? # at END of survey
               ts.state = 2
