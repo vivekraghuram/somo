@@ -4,10 +4,10 @@ require "google_drive"
 
 class TwilioController < ApplicationController
   skip_before_action :verify_authenticity_token
-
-  @@twilio_number = '+14085164672'
-  @@account_sid = 'ACc5f882e1e4d40eb6e854830f67a20643'
-  @@auth_token = '6e6cdc5b174ee4a0ae0ef8ac7854a2d6'
+  
+  @@twilio_number = '+14083421089'
+  @@account_sid = 'AC997d895e03da78468d7a954541370e32'
+  @@auth_token = '62282bd011e55c6ec20c8b51e91764bf'
 
   @@survey_start = 'Welcome to Somo surveys: reply BEGIN to start, and FINISH to stop'
   @@survey_end = 'Thank you for using Somo surveys'
@@ -147,7 +147,7 @@ class TwilioController < ApplicationController
         return false
       end
       index = abc.index(value)
-      puts index + " " + options.length
+      puts index.to_s + " " + options.length.to_s
       if index.nil? or (index + 1) > options.length
         return false
       end
@@ -202,9 +202,6 @@ class TwilioController < ApplicationController
     puts "sending"
     puts number
     puts body
-    # Test creds
-    #account_sid = 'AC6016613046133ebde46069a02581cc7e'
-    #auth_token = '8a45795f032cb5fd0b5f0567b58951be'
 
     @client = Twilio::REST::Client.new @@account_sid, @@auth_token
     @client.account.messages.create({
