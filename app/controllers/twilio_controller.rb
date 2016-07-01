@@ -112,7 +112,7 @@ class TwilioController < ApplicationController
    # return question.text + "\nA: very well\nB: somewhat\nC: very poor\n\nRespond with a single letter ex: B" 
     if question.questionType != "short_answer"
       options.each do |option|
-        response += "\n" + abc[0].upcase + option.value
+        response += "\n" + abc[0].upcase + ": " + option.value
         abc[0] = ""
       end
       #response += "\nA: very well\nB: somewhat\nC: very poor"
