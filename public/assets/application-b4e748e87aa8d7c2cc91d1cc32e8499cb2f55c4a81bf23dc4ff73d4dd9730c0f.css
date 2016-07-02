@@ -5594,7 +5594,7 @@ ul.pagination li a, ul.pagination li button {
 ul.pagination li:hover a,
 ul.pagination li a:focus, ul.pagination li:hover button,
 ul.pagination li button:focus {
-  background: #e6e6e6;
+  background: $light-gray;
 }
 /* line 51, /home/joey/.rvm/gems/ruby-2.2.1/gems/foundation-rails-5.5.3.2/vendor/assets/stylesheets/foundation/components/_pagination.scss */
 ul.pagination li.unavailable a, ul.pagination li.unavailable button {
@@ -6172,7 +6172,7 @@ ul.pagination li {
   height: 0;
   list-style: none;
   padding: 0;
-  border-top-color: #e6e6e6;
+  border-top-color: $light-gray;
 }
 /* line 105, /home/joey/.rvm/gems/ruby-2.2.1/gems/foundation-rails-5.5.3.2/vendor/assets/stylesheets/foundation/components/_side-nav.scss */
 .side-nav li.heading {
@@ -9746,7 +9746,7 @@ th.hide-for-touch {
 }
 /* line 1, /home/joey/somo/somo/app/assets/stylesheets/main.scss */
 body {
-  background-color: #E6E6E6;
+  background-color: $light-gray;
   font-family: 'Open Sans', sans-serif;
 }
 

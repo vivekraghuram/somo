@@ -1,3 +1,5 @@
+@import "main.scss";
+
 .home-header {
 	background-color: transparent !important;
 	padding: 0 !important;
@@ -6,7 +8,7 @@
 .survey-tile {
 	transition: all 0.5s;
 	padding: 20px !important;
-	border-bottom: 1px solid #E6E6E6;
+	border-bottom: 1px solid $light-gray;
 	cursor: pointer;
   position: relative;
 
@@ -22,33 +24,29 @@
    z-index: 100;
 
 	h2 {
-		color: #85BEAA;
+		color: $teal;
 	}
 }
 
-/* NEW BUTTON */
+//NEW BUTTON
 
 .new {
   cursor: pointer;
-  background-color: #85BEAA;
+  background-color: $teal;
   padding: 10px 30px;
   transition: all 0.5s;
   text-align: center;
   margin: auto;
 
   span{
-    color: #E6E6E6;
+    color: $light-gray;
     font-size: 13px;
     transition: all 0.5s;
   }
 }
 
 .new:hover {
-  background-color: #648F80;
-}
-
-.new:active {
-  margin-top: 22px;
+  background-color: $dark-teal;
 }
 
 .new-button {
@@ -101,4 +99,8 @@
   .actions {
     float: right;
   }
+}
+
+.sent {
+  margin-bottom: 60px;
 }

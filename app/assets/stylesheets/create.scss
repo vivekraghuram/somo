@@ -1,3 +1,5 @@
+@import "main.scss";
+
 .survey-heading {
   margin-top: 40px;
 }
@@ -37,10 +39,10 @@
 
 .delete:hover {
   cursor: pointer;
-  background-color: #E6E6E6;
+  background-color: $light-gray;
 
   i {
-    color: #85BEAA;
+    color: $teal;
   }
 }
 
@@ -56,10 +58,10 @@
 
 .chevron:hover {
   cursor: pointer;
-  background-color: #E6E6E6;
+  background-color: $light-gray;
 
   i {
-    color: #85BEAA;
+    color: $teal;
   }
 }
 
@@ -100,18 +102,18 @@
 
 .add:hover {
   span {
-    color: #648F80;
+    color: $dark-teal;
   }
 
   i {
-    color: #648F80;
+    color: $dark-teal;
   }
 }
 
 .conditional-q {
   margin: 10px 0 10px 50px;
   padding-right: 50px !important;
-  border-left: 4px solid #E6E6E6;
+  border-left: 4px solid $light-gray;
 }
 
 .options-button {
@@ -128,11 +130,11 @@
 }
 
 .options-button:hover {
-  color: #85BEAA;
+  color: $teal;
 }
 
 .options-button:active {
-  color: #648F80;
+  color: $dark-teal;
 }
 
 .icons-conditional {
@@ -144,64 +146,70 @@
   margin-top: 20px;
 }
 
+//CANCEL BUTTON
+
 .cancel {
   margin-top: 20px;
   cursor: pointer;
-  border: 3px solid #85BEAA;
-  padding: 10px 20px 10px 20px;
+  border: 2px solid $teal;
+  padding: 10px 20px;
   transition: all 0.5s;
   text-align: center;
 
   span{
-    color: #85BEAA;
-    font-size: 16px;
+    color: $teal;
+    font-size: 13px;
     transition: all 0.5s;
   }
 }
 
 .cancel:hover {
-  background-color: #85BEAA;
+  background-color: $teal;
 
   span {
-    color: #E6E6E6;
+    color: $light-gray;
   }
 }
 
 .cancel:active {
   margin-top: 22px;
-  background-color: #648F80;
-  border: 3px solid #648F80;
+  background-color: $dark-teal;
+  border: 2px solid $dark-teal;
 }
+
+//FINISH BUTTON
 
 .finish {
   margin-top: 20px;
   margin-left: 20px;
   cursor: pointer;
-  border: 3px solid #85BEAA;
-  background-color: #85BEAA;
-  padding: 10px 20px 10px 20px;
+  border: 2px solid $teal;
+  background-color: $teal;
+  padding: 10px 20px;
   transition: all 0.5s;
   text-align: center;
 
   span{
-    color: #E6E6E6;
-    font-size: 16px;
+    color: $light-gray;
+    font-size: 13px;
     transition: all 0.5s;
   }
 }
 
 .finish:hover {
-  background-color: #648F80;
-  border: 3px solid #648F80;
-}
-
-.finish:active {
-  margin-top: 22px;
+  background-color: $dark-teal;
+  border: 2px solid $dark-teal;
 }
 
 .finish-cancel {
   background-color: transparent !important;
   padding: 0 !important;
+}
+
+.finish:active {
+  margin-top: 22px;
+  background-color: $dark-teal;
+  border: 2px solid $dark-teal;
 }
 
 .error {
