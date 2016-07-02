@@ -1,3 +1,8 @@
+// COLOR PALETTE
+$teal: #85BEAA;
+$dark-teal: #648F80;
+$light-gray: #E6E6E6;
+
 * {
 	border: 0;
 	outline: none;
@@ -8,7 +13,7 @@
 }
 
 body {
-	background-color: #E6E6E6;
+	background-color: $light-gray;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
 	margin-bottom: 50px;
@@ -34,14 +39,14 @@ h4 {
 	font-size: 12px;
 	font-weight: 700;
 	text-align: center;
-	color: #85BEAA;
+	color: $teal;
 }
 
 h5 {
 	text-transform: uppercase;
 	font-size: 12px;
 	font-weight: 700;
-	color: #85BEAA;
+	color: $teal;
 }
 
 span {
@@ -71,6 +76,7 @@ select {
 	cursor: default;
   transition: all 0.5s;
   margin-bottom: 2px;
+  position: relative;
 }
 
 .question:after {
@@ -81,6 +87,7 @@ select {
    -moz-box-shadow: 0 0 10px #B3B3B3;
    -webkit-box-shadow: 0 0 10px #B3B3B3;
    box-shadow: 0 0 10px #B3B3B3;
+   z-index: 100;
 }
 
 .header {
@@ -127,7 +134,7 @@ input[name="required"] {
 }
 
 input[name="short"] {
-	background-color: #E6E6E6;
+	background-color: $light-gray;
 	box-shadow: none;
 }
 
@@ -138,7 +145,7 @@ input[name="conditional"] {
 .error-msg {
 	background-color: #D36A6A;
 	padding: 20px;
-	color: #E6E6E6;
+	color: $light-gray;
 	text-align: center;
 	display: inline-block;
 	position: fixed;
@@ -149,7 +156,8 @@ input[name="conditional"] {
 	box-shadow: 0 0 10px #B3B3B3;
 }
 
-/* NAV */
+//NAV
+
 .contain-to-grid {
 	background-color:transparent;
 }
@@ -158,7 +166,7 @@ input[name="conditional"] {
 	background-color:transparent;
 
 	.nav-title {
-		color: #85BEAA;
+		color: $teal;
 		font-family: 'Amatic SC', cursive;
 		font-size: 24px;
 		line-height: 4rem;

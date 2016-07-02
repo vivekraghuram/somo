@@ -44,11 +44,11 @@
 /* line 38, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .delete:hover {
   cursor: pointer;
-  background-color: #E6E6E6;
+  background-color: $light-gray;
 }
 /* line 42, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .delete:hover i {
-  color: #85BEAA;
+  color: $teal;
 }
 
 /* line 47, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
@@ -65,11 +65,11 @@
 /* line 57, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .chevron:hover {
   cursor: pointer;
-  background-color: #E6E6E6;
+  background-color: $light-gray;
 }
 /* line 61, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .chevron:hover i {
-  color: #85BEAA;
+  color: $teal;
 }
 
 /* line 66, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
@@ -113,18 +113,18 @@
 
 /* line 102, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .add:hover span {
-  color: #648F80;
+  color: $dark-teal;
 }
 /* line 106, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .add:hover i {
-  color: #648F80;
+  color: $dark-teal;
 }
 
 /* line 111, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .conditional-q {
   margin: 10px 0 10px 50px;
   padding-right: 50px !important;
-  border-left: 4px solid #E6E6E6;
+  border-left: 4px solid $light-gray;
 }
 
 /* line 117, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
@@ -143,12 +143,12 @@
 
 /* line 130, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .options-button:hover {
-  color: #85BEAA;
+  color: $teal;
 }
 
 /* line 134, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .options-button:active {
-  color: #648F80;
+  color: $dark-teal;
 }
 
 /* line 138, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
@@ -166,32 +166,32 @@
 .cancel {
   margin-top: 20px;
   cursor: pointer;
-  border: 3px solid #85BEAA;
+  border: 3px solid $teal;
   padding: 10px 20px 10px 20px;
   transition: all 0.5s;
   text-align: center;
 }
 /* line 155, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .cancel span {
-  color: #85BEAA;
+  color: $teal;
   font-size: 16px;
   transition: all 0.5s;
 }
 
 /* line 162, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .cancel:hover {
-  background-color: #85BEAA;
+  background-color: $teal;
 }
 /* line 165, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .cancel:hover span {
-  color: #E6E6E6;
+  color: $light-gray;
 }
 
 /* line 170, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .cancel:active {
   margin-top: 22px;
-  background-color: #648F80;
-  border: 3px solid #648F80;
+  background-color: $dark-teal;
+  border: 3px solid $dark-teal;
 }
 
 /* line 176, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
@@ -199,23 +199,23 @@
   margin-top: 20px;
   margin-left: 20px;
   cursor: pointer;
-  border: 3px solid #85BEAA;
-  background-color: #85BEAA;
+  border: 3px solid $teal;
+  background-color: $teal;
   padding: 10px 20px 10px 20px;
   transition: all 0.5s;
   text-align: center;
 }
 /* line 186, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .finish span {
-  color: #E6E6E6;
+  color: $light-gray;
   font-size: 16px;
   transition: all 0.5s;
 }
 
 /* line 193, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
 .finish:hover {
-  background-color: #648F80;
-  border: 3px solid #648F80;
+  background-color: $dark-teal;
+  border: 3px solid $dark-teal;
 }
 
 /* line 198, /home/joey/somo/somo/app/assets/stylesheets/create.scss */
@@ -5820,7 +5820,7 @@ ul.pagination li a, ul.pagination li button {
 ul.pagination li:hover a,
 ul.pagination li a:focus, ul.pagination li:hover button,
 ul.pagination li button:focus {
-  background: #e6e6e6;
+  background: $light-gray;
 }
 /* line 51, /home/joey/.rvm/gems/ruby-2.2.1/gems/foundation-rails-5.5.3.2/vendor/assets/stylesheets/foundation/components/_pagination.scss */
 ul.pagination li.unavailable a, ul.pagination li.unavailable button {
@@ -6398,7 +6398,7 @@ ul.pagination li {
   height: 0;
   list-style: none;
   padding: 0;
-  border-top-color: #e6e6e6;
+  border-top-color: $light-gray;
 }
 /* line 105, /home/joey/.rvm/gems/ruby-2.2.1/gems/foundation-rails-5.5.3.2/vendor/assets/stylesheets/foundation/components/_side-nav.scss */
 .side-nav li.heading {
@@ -9980,7 +9980,7 @@ th.hide-for-touch {
 .survey-tile {
   transition: all 0.5s;
   padding: 20px !important;
-  border-bottom: 1px solid #E6E6E6;
+  border-bottom: 1px solid $light-gray;
   cursor: pointer;
 }
 /* line 12, /home/joey/somo/somo/app/assets/stylesheets/home.scss */
@@ -9996,7 +9996,7 @@ th.hide-for-touch {
 }
 /* line 22, /home/joey/somo/somo/app/assets/stylesheets/home.scss */
 .survey-tile:hover h2 {
-  color: #85BEAA;
+  color: $teal;
 }
 
 /* line 27, /home/joey/somo/somo/app/assets/stylesheets/home.scss */
@@ -10004,23 +10004,23 @@ th.hide-for-touch {
   margin-top: 20px;
   margin-left: 20px;
   cursor: pointer;
-  border: 3px solid #85BEAA;
-  background-color: #85BEAA;
+  border: 3px solid $teal;
+  background-color: $teal;
   padding: 10px 20px 10px 20px;
   transition: all 0.5s;
   text-align: center;
 }
 /* line 37, /home/joey/somo/somo/app/assets/stylesheets/home.scss */
 .new span {
-  color: #E6E6E6;
+  color: $light-gray;
   font-size: 16px;
   transition: all 0.5s;
 }
 
 /* line 44, /home/joey/somo/somo/app/assets/stylesheets/home.scss */
 .new:hover {
-  background-color: #648F80;
-  border: 3px solid #648F80;
+  background-color: $dark-teal;
+  border: 3px solid $dark-teal;
 }
 
 /* line 49, /home/joey/somo/somo/app/assets/stylesheets/home.scss */
@@ -10094,7 +10094,7 @@ th.hide-for-touch {
 
 /* line 10, /home/joey/somo/somo/app/assets/stylesheets/main.scss */
 body {
-  background-color: #E6E6E6;
+  background-color: $light-gray;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
 }
@@ -10123,7 +10123,7 @@ h4 {
   font-size: 12px;
   font-weight: 700;
   text-align: center;
-  color: #85BEAA;
+  color: $teal;
 }
 
 /* line 39, /home/joey/somo/somo/app/assets/stylesheets/main.scss */
@@ -10131,7 +10131,7 @@ h5 {
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 700;
-  color: #85BEAA;
+  color: $teal;
 }
 
 /* line 46, /home/joey/somo/somo/app/assets/stylesheets/main.scss */
@@ -10232,7 +10232,7 @@ input[name="required"] {
 
 /* line 128, /home/joey/somo/somo/app/assets/stylesheets/main.scss */
 input[name="short"] {
-  background-color: #E6E6E6;
+  background-color: $light-gray;
   box-shadow: none;
 }
 
@@ -10245,7 +10245,7 @@ input[name="conditional"] {
 .error-msg {
   background-color: #D36A6A;
   padding: 20px;
-  color: #E6E6E6;
+  color: $light-gray;
   text-align: center;
   display: inline-block;
   position: fixed;
