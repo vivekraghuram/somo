@@ -11,6 +11,7 @@ body {
 	background-color: #E6E6E6;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
+	margin-bottom: 50px;
 }
 
 h1 {
@@ -146,4 +147,20 @@ input[name="conditional"] {
 	-moz-box-shadow: 0 0 10px #B3B3B3;
 	-webkit-box-shadow: 0 0 10px #B3B3B3;
 	box-shadow: 0 0 10px #B3B3B3;
+}
+
+/* NAV */
+.contain-to-grid {
+	background-color:transparent;
+}
+
+.top-bar {
+	background-color:transparent;
+
+	.nav-title {
+		color: #85BEAA;
+		font-family: 'Amatic SC', cursive;
+		font-size: 24px;
+		line-height: 4rem;
+	}
 }

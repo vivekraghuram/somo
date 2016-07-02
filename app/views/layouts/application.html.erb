@@ -6,10 +6,10 @@
   <%= javascript_include_tag 'application' %>
   <%= favicon_link_tag 'somo_favicon.png' %> 
   <%= csrf_meta_tags %>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
-
-<%= yield %>
-
+  <%= render 'layouts/navbar' %>
+	<%= yield %>
 </body>
 </html>
