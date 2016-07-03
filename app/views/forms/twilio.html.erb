@@ -1,11 +1,12 @@
 <div class="row home-header">
-  <h5 class="survey-heading">CHOOSE RECEPIENTS</h5>
+  <h5 class="survey-heading">CHOOSE RECIPIENTS</h5>
 </div>
 
 <form>
   <div class="row">
     <h1 id="form-name" data-fid="<%= @f.id %>"><%= @f.name %></h1>
-    <p>Phone Numbers, separated by commas.</p>
+    <h2>Survey Link: <%= link_to form_take_url(@f), form_take_path(@f), target: "_blank" %></h2><br>
+    Please input phone numbers, separated by commas.<br><br>
     <textarea rows="6" cols="1" placeholder="Phone Numbers" id="phonenumbers"></textarea>
   </div>
 
