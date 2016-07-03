@@ -13,8 +13,7 @@ class TwilioController < ApplicationController
   @@survey_end = 'Thank you for using Somo surveys'
   @@survey_over = 'Your survey is over'
 
-  @@abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  @@DEBUG = false
+  @@DEBUG = true
 
   def start
     form = Form.find(params[:form].to_i)
@@ -56,7 +55,7 @@ class TwilioController < ApplicationController
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
             send_twilio(response_number, ts.form.intro)
-            response_body = construct_question(ts)
+            response_body = ts.question.construct_text(ts.alpha_index)
             drive_init(ts.form, response_number)
             if @@DEBUG
               puts "Sending First Question"
@@ -68,7 +67,7 @@ class TwilioController < ApplicationController
             end
           end
         elsif ts.state == 1 # QUESTIONING
-          if answers_question(ts, response_body)
+          if ts.question.valid_answer(response_body, ts.alpha_index)
             if ts.question.questionType == "short_answer" # short answer value blank
               opt = Option.find_by(question: ts.question)
               drive_save(ts.form, ts.question, response_body, response_number)
@@ -85,14 +84,14 @@ class TwilioController < ApplicationController
               end
             else
               ts.question = Question.find(opt.nextQuestion)
-              response_body = construct_question(ts)
+              response_body = ts.question.construct_text(ts.alpha_index)
               if @@DEBUG
                 puts "Survey Continues with question: " + ts.question.id.to_s
               end
             end
             ts.save
           else # Doesn't answer question RESEND
-            response_body = construct_question(ts)
+            response_body = ts.question.construct_text(ts.alpha_index)
             if @@DEBUG
               puts "Invalid response resending question: " + ts.question.id.to_s
             end
@@ -106,69 +105,6 @@ class TwilioController < ApplicationController
       puts "ERROR: was not recieved - invalid twilio response"
     end
     render :nothing => true
-  end
-
-  def construct_question(ts) # returns body of message
-    if @@DEBUG
-      puts "contructing question: " + ts.question.to_s
-    end
-    abc = alpha_cycle(ts.alpha_index)
-    options = ts.question.options
-    response = ts.question.text + "\n"
-    if ts.question.questionType != "short_answer"
-      # TODO More options than ABC's
-      options.each do |option|
-        response += "\n" + abc[0].upcase + ": " + option.value
-        abc[0] = ""
-      end
-      if ts.question.questionType == "multiple_choice" || ts.question.questionType == "conditional"
-      response += "\n\nRespond with a single letter ex: B"
-      elsif ts.question.questionType == "checkbox"
-        response += "\n\nRespond with one or more letters ex: AC"
-      else
-        puts "ERROR: unknown question type"
-      end
-    else
-      response += "\n\nRespond with a short answer (max 120 characters)"
-    end
-    if @@DEBUG
-      puts "question: " + response
-    end
-    return response
-  end
-
-  def answers_question(ts, value)
-    if @@DEBUG
-      puts "answering question: " + ts.question.to_s + " with value: " + value.to_s
-    end
-    abc = alpha_cycle(ts.alpha_index)
-    options = ts.question.options
-    if ts.question.questionType == "short_answer"
-      return true
-    elsif ts.question.questionType == "checkbox"
-      value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
-        index = abc.index(choice)
-        if index.nil? or (index + 1) > options.length
-          return false
-        end
-        return true
-      end
-    elsif ts.question.questionType == "multiple_choice" || ts.question.questionType == "conditional"
-      value = value.upcase.gsub(/[^A-Z]/, "")
-      if value.length > 1
-        return false
-      end
-      index = abc.index(value)
-      if index.nil? or (index + 1) > options.length
-        return false
-      end
-      return true
-    end
-    return false
-  end
-
-  def alpha_cycle(index)
-    @@abc[index..@@abc.size] + @@abc[0..index-1]
   end
 
   def drive_save(form, question, value, phone_number)
