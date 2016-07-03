@@ -1,4 +1,10 @@
 class FormsController < ApplicationController
+  def new
+  end
+
+  def new_dev
+  end
+
   def create
     form = Form.new(create_params)
     if form.save
@@ -80,7 +86,7 @@ class FormsController < ApplicationController
   end
 
   def twilio
-    @f = Form.find_by_id(params[:id])
+    @f = Form.find_by_id(params[:form_id])
   end
 
   private

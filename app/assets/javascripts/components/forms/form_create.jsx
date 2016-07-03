@@ -79,7 +79,6 @@ class FormCreate extends React.Component {
   }
 
   _submitForm = (e) => {
-    // This won't work. need to number questions manually like i did originally (handles delete)
     this.forceUpdate();
     submission = {
       name      : this.state.name,
@@ -90,7 +89,7 @@ class FormCreate extends React.Component {
     let form = this;
     $.ajax({
       type : "POST",
-      url :  'forms/create',
+      url :  form.props.save_path,
       dataType: 'json',
       contentType: 'application/json',
       data : JSON.stringify(submission)
@@ -199,7 +198,7 @@ class FormCreate extends React.Component {
           </div>
           <div className = "row finish-cancel">
             { this._renderSaveButton() }
-            <a href = "/">
+            <a href = { this.props.root_path }>
               <div className = "cancel columns right small-6 medium-4 large-3">
                 <span>Return to Dashboard</span>
               </div>
@@ -215,5 +214,7 @@ class FormCreate extends React.Component {
 FormCreate.propTypes = {
     user_id      : React.PropTypes.number.isRequired,
     form_id      : React.PropTypes.number.isRequired,
+    root_path    : React.PropTypes.string.isRequired,
+    save_path  : React.PropTypes.string.isRequired,
     initial_state: React.PropTypes.object,
 };
