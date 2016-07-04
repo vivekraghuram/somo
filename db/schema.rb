@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160701175221) do
+ActiveRecord::Schema.define(version: 20160704010600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,9 +50,10 @@ ActiveRecord::Schema.define(version: 20160701175221) do
     t.integer  "question_id"
     t.string   "phone"
     t.integer  "state"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.integer  "alpha_index"
+    t.boolean  "sent_last_hour", default: true
   end
 
   add_index "twilio_states", ["form_id"], name: "index_twilio_states_on_form_id", using: :btree

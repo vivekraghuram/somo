@@ -17,9 +17,9 @@ class TwilioController < ApplicationController
 
   def start
     form = Form.find(params[:form].to_i)
-    send_twilio(("+" + params[:phone]), @@survey_start)
+    ts = TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form, alpha_index: 0)
+    ts.send_twilio(@@survey_start)
     # TODO Check if Exists First
-    TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form, alpha_index: 0)
     drive_init(form, ("+" + params[:phone]))
     render :nothing => true
   end
@@ -33,7 +33,7 @@ class TwilioController < ApplicationController
       end
       ts = TwilioState.find_by phone: response_number
       if ts.blank? # Recieved Response without Number found
-        TwilioState.create(phone: response_number, state: 0, form: Form.last, alpha_index: 0)
+        ts = TwilioState.create(phone: response_number, state: 0, form: Form.last, alpha_index: 0)
         response_body = @@survey_start
         if @@DEBUG
           puts "Could not find number: " + response_number.to_s + " in db"
@@ -54,7 +54,7 @@ class TwilioController < ApplicationController
             ts.state = 1
             ts.question = Question.find(ts.form.firstQuestion)
             ts.save
-            send_twilio(response_number, ts.form.intro)
+            ts.send_twilio(ts.form.intro)
             response_body = ts.question.construct_text(ts.alpha_index)
             drive_init(ts.form, response_number)
             if @@DEBUG
@@ -94,7 +94,7 @@ class TwilioController < ApplicationController
           puts "ERROR: unknown state (someone is monkeying around in the db)"
         end
       end
-      send_twilio(response_number, response_body)
+      ts.send_twilio(response_body)
     else # Twilio api returned not recieved response
       puts "ERROR: was not recieved - invalid twilio response"
     end
@@ -141,20 +141,5 @@ class TwilioController < ApplicationController
     #  q.update_attribute drive_column: i + 3
     #end
     #return sorted_questions.map{|q| q.qname}.join(",")
-  end
-
-  def send_twilio(number, body)
-    if @@DEBUG
-      puts "sending"
-      puts number
-      puts body
-    end
-
-    @client = Twilio::REST::Client.new @@account_sid, @@auth_token
-    @client.account.messages.create({
-      from: @@twilio_number,
-      to: number,
-      body: body
-    })
   end
 end
