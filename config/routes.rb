@@ -7,13 +7,16 @@ Rails.application.routes.draw do
 
   get 'forms/create_dev', to: 'forms#create_dev'
 
-  resources :twilio do
-    post 'recieve', to: 'twilio#recieve'
-    post 'start', to: 'twilio#start'
+  post '/twilio/recieve' => 'twilio#recieve'
+  post '/twilio/start' => 'twilio#start'
+
+  #resources :twilio do
+    #post 'recieve', to: 'twilio#recieve'
+    #post 'start', to: 'twilio#start'
 
     #get 'drive', to: 'twilio#drive_save'
     #get 'drive/start', to: 'twilio#drive_init'
 
     #get 'send_twilio' => 'application#send_twilio'
-  end
+  #end
 end
