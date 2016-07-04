@@ -68,22 +68,16 @@ class TwilioController < ApplicationController
           end
         elsif ts.state == 1 # QUESTIONING
           if ts.question.valid_answer(response_body, ts.alpha_index)
-            if ts.question.questionType == "short_answer" # short answer value blank
-              opt = Option.find_by(question: ts.question)
-              drive_save(ts.form, ts.question, response_body, response_number)
-            else
-              opt = ts.question.options[alpha_cycle(ts.alpha_index).index(response_body)]
-              drive_save(ts.form, ts.question, opt.value, response_number)
-              ts.alpha_index = (ts.alpha_index + ts.question.options.length) % @@abc.size
-            end
-            if opt.nextQuestion.nil? # at END of survey
-              ts.state = 2
+            answer = ts.question.get_answer(response_body, ts)
+            drive_save(ts.form, ts.question, answer, response_number)
+            if ts.question.nil?
               response_body = @@survey_end
+              ts.state = 2
+              ts.save
               if @@DEBUG
                 puts "Survey Complete"
               end
             else
-              ts.question = Question.find(opt.nextQuestion)
               response_body = ts.question.construct_text(ts.alpha_index)
               if @@DEBUG
                 puts "Survey Continues with question: " + ts.question.id.to_s
