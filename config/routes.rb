@@ -15,8 +15,6 @@ Rails.application.routes.draw do
     #post 'start', to: 'twilio#start'
 
     #get 'drive', to: 'twilio#drive_save'
-    #get 'drive/start', to: 'twilio#drive_init'
-
     #get 'send_twilio' => 'application#send_twilio'
   #end
 end
