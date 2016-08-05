@@ -4,7 +4,7 @@ require "google_drive"
 
 class TwilioController < ApplicationController
   skip_before_action :verify_authenticity_token
-  
+
   @@twilio_number = '+14083421089'
   @@account_sid = 'AC997d895e03da78468d7a954541370e32'
   @@auth_token = '62282bd011e55c6ec20c8b51e91764bf'
@@ -17,23 +17,16 @@ class TwilioController < ApplicationController
 
   def start
     form = Form.find(params[:form].to_i)
-    phone = "+" + params[:phone]
-    init_drive = false
-    if TwilioState.find_by(form: form).blank?
-      init_drive = true
+    phone = params[:phone].trim()
+    if phone =~ /,/ # Comma Separated
+      numbers = phone.gsub(/[^0-9,]/,"").split(",")
+    else # Intelligent matching
+      phone_regex = /\+?(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)[^0-9]*\d\d[^0-9]*\d?[^0-9]*\d?[^0-9]*\d?[^0-9]*\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?/
+      numbers = phone.to_enum(:scan, phone_regex).map {$&}.map {|n| n.gsub(/[^0-9]/,"")}
     end
-    if TwilioState.find_by(phone: phone).blank?
-      TwilioState.create(phone: phone, state: 0, form: form, alpha_index: 0)
-      # TODO Check if Exists First
-      if init_drive
-        drive_init(form)
-      end
-      drive_create_row(form, phone)
-      render :nothing => true
-    else
-      render text: "You've already sent to this number"
+    numbers.each do |num|
+      start_survey(form, "+" + num)
     end
-    ts.send_twilio(@@survey_start)
   end
 
   def recieve
@@ -113,6 +106,24 @@ class TwilioController < ApplicationController
     render :nothing => true
   end
 
+  def start_survey(form, phone)
+    init_drive = false
+    if TwilioState.find_by(form: form).blank?
+      init_drive = true
+    end
+    if TwilioState.find_by(phone: phone).blank?
+      TwilioState.create(phone: phone, state: 0, form: form, alpha_index: 0)
+      if init_drive
+        drive_init(form)
+      end
+      drive_create_row(form, phone)
+      render :nothing => true
+    else
+      render text: "You've already sent to this number"
+    end
+    ts.send_twilio(@@survey_start)
+  end
+
   def drive_save(form, question, value, phone_number)
     session = GoogleDrive.saved_session("config.json")
     worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
@@ -154,7 +165,7 @@ class TwilioController < ApplicationController
     session.upload_from_file((directory + file_name), file_name)
   end
 
-  def drive_create_row(form, phone_number) 
+  def drive_create_row(form, phone_number)
     session = GoogleDrive.saved_session("config.json")
     worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
     row = 2
