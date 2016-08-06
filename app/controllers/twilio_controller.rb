@@ -4,7 +4,7 @@ require "google_drive"
 
 class TwilioController < ApplicationController
   skip_before_action :verify_authenticity_token
-  
+
   @@twilio_number = '+14083421089'
   @@account_sid = 'AC997d895e03da78468d7a954541370e32'
   @@auth_token = '62282bd011e55c6ec20c8b51e91764bf'
@@ -17,11 +17,16 @@ class TwilioController < ApplicationController
 
   def start
     form = Form.find(params[:form].to_i)
-    ts = TwilioState.create(phone: ("+" + params[:phone]), state: 0, form: form, alpha_index: 0)
-    ts.send_twilio(@@survey_start)
-    # TODO Check if Exists First
-    drive_init(form, ("+" + params[:phone]))
-    render :nothing => true
+    phone = params[:phone].trim()
+    if phone =~ /,/ # Comma Separated
+      numbers = phone.gsub(/[^0-9,]/,"").split(",")
+    else # Intelligent matching
+      phone_regex = /\+?(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)[^0-9]*\d\d[^0-9]*\d?[^0-9]*\d?[^0-9]*\d?[^0-9]*\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?/
+      numbers = phone.to_enum(:scan, phone_regex).map {$&}.map {|n| n.gsub(/[^0-9]/,"")}
+    end
+    numbers.each do |num|
+      start_survey(form, "+" + num)
+    end
   end
 
   def recieve
@@ -101,6 +106,24 @@ class TwilioController < ApplicationController
     render :nothing => true
   end
 
+  def start_survey(form, phone)
+    init_drive = false
+    if TwilioState.find_by(form: form).blank?
+      init_drive = true
+    end
+    if TwilioState.find_by(phone: phone).blank?
+      TwilioState.create(phone: phone, state: 0, form: form, alpha_index: 0)
+      if init_drive
+        drive_init(form)
+      end
+      drive_create_row(form, phone)
+      render :nothing => true
+    else
+      render text: "You've already sent to this number"
+    end
+    ts.send_twilio(@@survey_start)
+  end
+
   def drive_save(form, question, value, phone_number)
     session = GoogleDrive.saved_session("config.json")
     worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
@@ -108,26 +131,54 @@ class TwilioController < ApplicationController
     # Find Row
     row = 0
     (2..worksheet.num_rows).each do |r|
-      if worksheet[r, 3] == phone_number
+      if worksheet[r, 3] == phone_number.gsub(/[^0-9]/, "")
+        row = r
+        break
+      end
+    end
+
+    # Find Column
+    col = 0
+    (2..worksheet.num_cols).each do |c|
+      if worksheet[1, c] == question.qname
+        col = c
+        break
+      end
+    end
+    if row == 0 or col == 0
+      puts "ERROR: could not find drive column for question id: " + question.id.to_s + " value: " + value + " phone: " + phone_number
+    else
+      worksheet[row, 1] = Time.now
+      worksheet[row, 2] = true
+      worksheet[row, col] = value
+      worksheet.save
+    end
+  end
+
+  def drive_init(form)
+    directory = Rails.root.join('tmp').to_s + "/"
+    file_name = drive_file_name(form)
+    File.open(File.join(directory, file_name), 'w+') do |f|
+      f.puts "Last Updated,In Progress,Phone Number," + drive_question_schema(form)
+    end
+    session = GoogleDrive.saved_session("config.json")
+    session.upload_from_file((directory + file_name), file_name)
+  end
+
+  def drive_create_row(form, phone_number)
+    session = GoogleDrive.saved_session("config.json")
+    worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
+    row = 2
+    (2..worksheet.num_rows).each do |r|
+      if worksheet[r, 3] == ""
         row = r
         break
       end
     end
     worksheet[row, 1] = Time.now
-    worksheet[row, 2] = true
-    worksheet[row, 4] = "very well" # hard code question.drive_column
+    worksheet[row, 2] = false
+    worksheet[row, 3] = phone_number
     worksheet.save
-  end
-
-  def drive_init(form, phone_number)
-    directory = Rails.root.join('tmp').to_s + "/"
-    file_name = drive_file_name(form)
-    File.open(File.join(directory, file_name), 'w+') do |f|
-      f.puts "Last Updated,In Progress,Phone Number," + drive_question_schema(form)
-      f.puts ",," + phone_number + ("," * form.questions.length)
-    end
-    session = GoogleDrive.saved_session("config.json")
-    session.upload_from_file((directory + file_name), file_name)
   end
 
   def drive_file_name(form)
@@ -135,11 +186,6 @@ class TwilioController < ApplicationController
   end
 
   def drive_question_schema(form)
-    return "Question 1,Question 2,Question 3,Question 4, Question 5" # hard code schema
-    #sorted_questions = form.questions.sort
-    #sorted_questions.each_with_index do |q, i|
-    #  q.update_attribute drive_column: i + 3
-    #end
-    #return sorted_questions.map{|q| q.qname}.join(",")
+    return form.questions.map{|q| q.qname}.join(",")
   end
 end
