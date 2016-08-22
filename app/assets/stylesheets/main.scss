@@ -2,6 +2,7 @@
 $teal: #85BEAA;
 $dark-teal: #648F80;
 $light-gray: #E6E6E6;
+$faint-gray: #FAFAFA;
 
 * {
 	border: 0;
@@ -56,7 +57,7 @@ span {
 	color: #808080;
 }
 
-a {
+a, a:focus, a:visited {
 	text-decoration: none;
 	color: inherit;
 }
@@ -96,6 +97,8 @@ select {
 
 textarea {
 	box-shadow: none;
+	background-color: $faint-gray;
+	border: none;
 }
 
 input[name="title"] {
@@ -104,6 +107,7 @@ input[name="title"] {
 	border: none;
 	height: 50px;
 	box-shadow: none;
+	background-color: $faint-gray;
 }
 
 input[name="question"] {
@@ -111,6 +115,7 @@ input[name="question"] {
 	font-weight: 400;
 	border: none;
 	box-shadow: none;
+	background-color: $faint-gray;
 }
 
 input[name="option"] {
@@ -171,4 +176,44 @@ input[name="conditional"] {
 		font-size: 24px;
 		line-height: 4rem;
 	}
+}
+
+//TOOLTIP
+.tool-tip {
+    position: relative;
+    display: inline-block;
+}
+
+.tool-tip .tool-tiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    font-weight: normal;
+    font-size: 12px;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 150%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tool-tip .tool-tiptext::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+.tool-tip:hover .tool-tiptext {
+    visibility: visible;
+    opacity: 1;
 }

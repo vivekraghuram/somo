@@ -93,16 +93,19 @@ class QuestionCreate extends React.Component {
         </div>
         { this._renderQuestionType() }
         <div className = "columns short-icons">
-          <div className = "delete right"
+          <div className = "delete right tool-tip"
                onClick = {this._deleteQuestion} >
+            <span className="tool-tiptext">Delete Question</span>
             <i className = "fa fa-trash fa-lg"></i>
           </div>
-          <div className = "chevron right"
+          <div className = "chevron right tool-tip"
                onClick = {this._swapDown} >
+            <span className="tool-tiptext">Move Down</span>
             <i className = "fa fa-chevron-down fa-lg"></i>
           </div>
-          <div className = "chevron right"
+          <div className = "chevron right tool-tip"
                onClick = {this._swapUp} >
+            <span className="tool-tiptext">Move Up</span>
             <i className = "fa fa-chevron-up fa-lg"></i>
           </div>
         </div>
