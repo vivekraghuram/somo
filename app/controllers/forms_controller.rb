@@ -1,13 +1,228 @@
+require 'twilio-ruby'
+require "google/api_client"
+require "google_drive"
+
 class FormsController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
+  @@twilio_number = '+14083421089'
+  @@account_sid = 'AC997d895e03da78468d7a954541370e32'
+  @@auth_token = '62282bd011e55c6ec20c8b51e91764bf'
+
+  @@survey_start = 'Welcome to Somo surveys: reply BEGIN to start, and FINISH to stop'
+  @@survey_end = 'Thank you for using Somo surveys'
+  @@survey_over = 'Your survey is over'
+
+  @@DEBUG = true
+
   def new
   end
 
-  def new_dev
+  def start
+    form = Form.find(params[:form].to_i)
+    form_json = JSON.parse(form.json)
+    first_question = create_questions(form, form_json['questions'])
+    form.update_attributes(firstQuestion: first_question.id)
+
+    phone = params[:phone]
+    if phone =~ /,/ # Comma Separated
+      numbers = phone.gsub(/[^0-9,]/,"").split(",")
+    else # Intelligent matching
+      phone_regex = /\+?(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)[^0-9]*\d\d[^0-9]*\d?[^0-9]*\d?[^0-9]*\d?[^0-9]*\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?[^0-9 ]?\d?/
+      numbers = phone.to_enum(:scan, phone_regex).map {$&}.map {|n| n.gsub(/[^0-9]/,"")}
+    end
+    numbers.each do |num|
+      start_survey(form, "+" + num)
+    end
+  end
+
+  def recieve
+    if params[:SmsStatus] == "received"
+      response_number = params[:From]
+      response_body = params[:Body].strip.upcase
+      if @@DEBUG
+        puts "reponse number: " + response_number.to_s + " body: " + response_body.to_s
+      end
+      ts = TwilioState.find_by phone: response_number
+      if ts.blank? # Recieved Response without Number found
+        ts = TwilioState.create(phone: response_number, state: 0, form: Form.last, alpha_index: 0)
+        response_body = @@survey_start
+        if @@DEBUG
+          puts "Could not find number: " + response_number.to_s + " in db"
+        end
+      else
+        if ts.state == 2 # END
+          response_body = @@survey_over
+          if @@DEBUG
+            puts "Survey in finished state"
+          end
+        elsif response_body == "FINISH"
+          response_body = @@survey_end
+          if @@DEBUG
+            puts "Survey Completed via FINISH Command"
+          end
+        elsif ts.state == 0 # WELCOME
+          if response_body == "BEGIN"
+            ts.state = 1
+            ts.question = Question.find(ts.form.firstQuestion)
+            ts.save
+            ts.send_twilio(ts.form.intro)
+            response_body = ts.question.construct_text(ts.alpha_index)
+            drive_init(ts.form, response_number)
+            if @@DEBUG
+              puts "Sending First Question"
+            end
+          else # USER welcomed and !start
+            response_body = @@survey_start
+            if @@DEBUG
+              puts "User responsed to Survey Start with something other than Begin"
+            end
+          end
+        elsif ts.state == 1 # QUESTIONING
+          if ts.question.valid_answer(response_body, ts.alpha_index)
+            answer = ts.question.get_answer(response_body, ts)
+            drive_save(ts.form, ts.question, answer, response_number)
+            if ts.question.nil?
+              response_body = @@survey_end
+              ts.state = 2
+              ts.save
+              if @@DEBUG
+                puts "Survey Complete"
+              end
+            else
+              response_body = ts.question.construct_text(ts.alpha_index)
+              if @@DEBUG
+                puts "Survey Continues with question: " + ts.question.id.to_s
+              end
+            end
+            ts.save
+          else # Doesn't answer question RESEND
+            response_body = ts.question.construct_text(ts.alpha_index)
+            if @@DEBUG
+              puts "Invalid response resending question: " + ts.question.id.to_s
+            end
+          end
+        else # state not in enum
+          puts "ERROR: unknown state (someone is monkeying around in the db)"
+        end
+      end
+      ts.send_twilio(response_body)
+    else # Twilio api returned not recieved response
+      puts "ERROR: was not recieved - invalid twilio response"
+    end
+    render :nothing => true
+  end
+
+  def start_survey(form, phone)
+    init_drive = false
+    if TwilioState.find_by(form: form).blank?
+      init_drive = true
+    end
+    if TwilioState.find_by(phone: phone).blank?
+      ts = TwilioState.create(phone: phone, state: 0, form: form, alpha_index: 0)
+      if init_drive
+        drive_init(form)
+      end
+      drive_create_row(form, phone)
+      render :nothing => true
+    else
+      ts = TwilioState.find_by(phone: phone)
+      render text: "You've already sent to this number"
+    end
+    ts.send_twilio(@@survey_start)
+  end
+
+  def drive_save(form, question, value, phone_number)
+    session = GoogleDrive.saved_session("config.json")
+    worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
+
+    # Find Row
+    row = 0
+    (2..worksheet.num_rows).each do |r|
+      if worksheet[r, 3] == phone_number.gsub(/[^0-9]/, "")
+        row = r
+        break
+      end
+    end
+
+    # Find Column
+    col = 0
+    (2..worksheet.num_cols).each do |c|
+      if worksheet[1, c] == question.qname
+        col = c
+        break
+      end
+    end
+    if row == 0 or col == 0
+      puts "ERROR: could not find drive column for question id: " + question.id.to_s + " value: " + value + " phone: " + phone_number
+    else
+      worksheet[row, 1] = Time.now
+      worksheet[row, 2] = true
+      worksheet[row, col] = value
+      worksheet.save
+    end
+  end
+
+  def drive_init(form)
+    directory = Rails.root.join('tmp').to_s + "/"
+    file_name = drive_file_name(form)
+    File.open(File.join(directory, file_name), 'w+') do |f|
+      f.puts "Last Updated,In Progress,Phone Number," + drive_question_schema(form)
+    end
+    session = GoogleDrive.saved_session("config.json")
+    session.upload_from_file((directory + file_name), file_name)
+  end
+
+  def drive_create_row(form, phone_number)
+    session = GoogleDrive.saved_session("config.json")
+    worksheet = session.spreadsheet_by_title(drive_file_name(form)).worksheets[0]
+    row = 2
+    (2..worksheet.num_rows).each do |r|
+      if worksheet[r, 3] == ""
+        row = r
+        break
+      end
+    end
+    worksheet[row, 1] = Time.now
+    worksheet[row, 2] = false
+    worksheet[row, 3] = phone_number
+    worksheet.save
+  end
+
+  def drive_file_name(form)
+     return form.name + " (Responses).csv"
+  end
+
+  def drive_question_schema(form)
+    return form.questions.map{|q| q.qname}.join(",")
   end
 
   def create
-    # save json to database
-    form = Form.new(create_params)
+    # save json
+    question_111 = { :questionType => "short_answer", :questionIndex => 0, :_key => 0, :text => "1-1:1 Subq", :options => nil, :qname => "Question 1-1:1" }
+    option_1 = { :value => "Op 1", :conditional => true, :questions => [question_111] }
+
+    option_2 = { :value => "Op 2", :conditional => false, :questions => [] }
+
+    question_13211 = { :questionType => "short_answer", :questionIndex => 0, :_key => 0, :text => "1-3:2-1:1 Why?", :options => nil, :qname => "Question 1-3:2-1:1"}
+    question_13221 = { :questionType => "short_answer", :questionIndex => 0, :_key => 0, :text => "1-3:2-2:1 Why not?", :options => nil, :qname => "Question 1-3:2-2:1"}
+    yes_option = { :value => "Yes", :conditional => true, :questions => [ question_13211 ] }
+    no_option = { :value => "No", :conditional => true, :questions => [ question_13221 ] }
+    question_131 = { :questionType => "short_answer", :questionIndex => 0, :_key => 0, :text => "1-3:1 Subq", :options => nil, :qname => "Question 1-3:1" }
+    question_132 = { :questionType => "conditional", :questionIndex => 1, :_key => 1, :text => "1-3:2 Subq", :options => [ yes_option, no_option], :qname => "Question 1-3:2" }
+    checkbox_op_1 = { :value => "Op 1" }
+    checkbox_op_2 = { :value => "Op 2" }
+    question_133 = { :questionType => "checkbox", :questionIndex => 2, :_key => 2, :text => "1-3:3 Subq", :options => [ checkbox_op_1, checkbox_op_2 ], :qname => "Question 1-3:3" }
+    option_3 = { :value => "Op 3", :conditional => true, :questions => [question_131, question_132, question_133] }
+
+    question_1 = { :questionType => "conditional", :questionIndex => 0, :_key => 0, :text => "First", :options => [ option_1 , option_2, option_3 ], :qname => "Question 1" }
+    question_2 = { :questionType => "short_answer", :questionIndex => 1, :_key => 1, :text => "Second", :options => nil, :qname => "Question 2"}
+
+    form_json = { :name => "Title", :intro => "Desc.", :questions => [ question_1, question_2 ] }
+
+    form = Form.new(name: "Tester Form 1", intro: "This is a tester form.", firstQuestion: 0, json: form_json.to_json)
+
+    #form = Form.new(create_params)
     if form.save
       render_json_message(:ok, message: 'Form created!')
     else
@@ -29,37 +244,6 @@ class FormsController < ApplicationController
     end
   end
 
-  def submit
-    form = Form.find(params[:id])
-    form_json = JSON.parse(form.json)
-    last_qid = nil
-    cur_qid = nil
-    questions = form_json['questions']
-    if !questions.nil?
-      questions.reverse.each do |q|
-        question = Question.new(form_id: form.id, questionType: q['questionType'], text: q['text'], qname: q['qname'])
-        if question.save
-          last_qid = cur_qid
-          cur_qid = question.id
-          options = q['options']
-          if !options.nil?
-            create_options(options, question, last_qid)
-          else
-            option = Option.new(question: question, value: "c", nextQuestion: last_qid)
-            if !option.save
-              render_json_message(:forbidden, errors: option.errors.full_messages)
-              return
-            end
-          end
-        else
-          render_json_message(:forbidden, errors: question.errors.full_messages)
-          return
-        end
-      end
-    end
-    form.update_attributes(:firstQuestion => cur_qid)
-  end
-
   def destroy
     form = Form.find(params[:id])
     if form.destroy
@@ -76,52 +260,48 @@ class FormsController < ApplicationController
 
   private
 
+  def create_questions(form, questions)
+    prev_question = Question.new
+    questions.reverse.each do |q|
+      question = Question.new(form_id: form.id, questionType: q['questionType'], text: q['text'], qname: q['qname'])
+      if question.save
+        if !q["options"].nil?
+          q['options'].each do |o|
+            create_option(form, question, prev_question, o)
+          end
+        else
+          create_option(form, question, prev_question, {"value"=>""}) # placeholder option
+        end
+        prev_question = question
+      else
+        throw_error()
+      end
+    end
+    return prev_question
+  end
+
+  def throw_error
+    puts "<<< Error"
+    1/0
+  end
+
+  def create_option(form, cur_question, prev_question, option)
+    o = Option.new(question: cur_question, value: option["value"])
+    if option["conditional"]
+      o.nextQuestion = create_questions(form, option["questions"]).id
+    else
+      o.nextQuestion = prev_question.id
+    end
+    if !o.save
+      throw_error()
+    end
+  end
+
   def create_params
     params.permit(:json)
   end
 
   def update_params
     params.permit(:json)
-  end
-
-  def create_options(options, question, last_qid)
-    options.each do |o|
-      last_fid = nil
-      cur_fid = nil
-      followups = o['questions']
-      if !followups.nil?
-        cur_fid = create_questions(followups,last_fid, cur_fid, last_qid)
-      end
-      #create the option to link to next question
-      option = Option.new(question: question, value: o['value'], nextQuestion: cur_fid)
-      if !option.save
-        render_json_message(:forbidden, errors: option.errors.full_messages)
-        return
-      end
-    end
-  end
-
-  def create_questions(followups, last_fid, cur_fid, last_qid)
-    followups.reverse.each do |f|
-      follow_question = Question.new(form_id: form.id, questionType: f['questionType'], text: f['text'], qname: f['qname'])
-      if follow_question.save
-        last_fid = cur_fid
-        cur_fid = follow_question.id
-        follow_options = f['options']
-        if !follow_options.nil?
-          create_options(follow_options, follow_question, last_qid)
-        else
-          if last_fid.nil?
-            follow_op = Option.new(question: follow_question, value: 'a', nextQuestion: last_qid)
-          else
-            follow_op = Option.new(question: follow_question, value: 'b', nextQuestion: last_fid)
-          end
-          if !follow_op.save
-            render_json_message(:forbidden, errors: follow_op.errors.full_messages)
-            return
-          end
-        end
-      end
-    end
   end
 end
