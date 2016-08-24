@@ -13,6 +13,7 @@
 
 <div class="current">
   <% @forms.each do |f| %>
+    <%= link_to(edit_form_path(f.id)) do %> CLICK ME <% end %>
     <div class="row survey-tile">
       <div class="columns">
         <div class="columns small-7 large-7">

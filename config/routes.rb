@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root to: 'pages#home'
 
-  resources :forms, only: [:new, :create, :destroy] do
+  resources :forms, only: [:new, :create, :edit, :destroy] do
     get 'twilio', to: 'forms#twilio'
     post 'recieve', to: 'forms#recieve'
     post 'start', to: 'forms#start'

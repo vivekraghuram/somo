@@ -7,7 +7,7 @@ class FormCreate extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = props.initial_state || {
+    this.state = $.parseJSON(props.initial_state || null) || {
       name      : null,
       intro     : null,
       questions : [],

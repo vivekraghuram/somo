@@ -85,7 +85,7 @@ class ConditionalCreate extends MultipleChoiceCreate {
   constructor(props) {
     super(props);
     this.state = {
-      options     : [],
+      options     : this.props.initial_options || [],
     };
 
     if (this.state.options.length == 0) {
