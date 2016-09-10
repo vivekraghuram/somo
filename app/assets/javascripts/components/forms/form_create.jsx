@@ -12,7 +12,7 @@ class FormCreate extends React.Component {
     };
 
     this.state.saveState = "unsaved";
-    this.state.save_path = null;
+    this.state.savePath = null;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -88,7 +88,7 @@ class FormCreate extends React.Component {
     let form = this;
     $.ajax({
       type : "POST",
-      url :  this.state.save_path || form.props.save_path,
+      url :  this.state.savePath || form.props.save_path,
       dataType: 'json',
       contentType: 'application/json',
       data : JSON.stringify(submission)
