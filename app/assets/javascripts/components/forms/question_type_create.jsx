@@ -85,7 +85,7 @@ class ConditionalCreate extends MultipleChoiceCreate {
   constructor(props) {
     super(props);
     this.state = {
-      options     : [],
+      options     : this.props.initial_options || [],
     };
 
     if (this.state.options.length == 0) {
@@ -118,6 +118,21 @@ class ConditionalCreate extends MultipleChoiceCreate {
     // I don't believe i need to force an update here...
   }
 
+  _renderCheckbox = (index) => {
+    if (this.state.options[index].conditional) {
+      return <input type="checkbox"
+             name="conditional"
+             onChange={this._updateConditional.bind(this, index)}
+             checked
+             className="condition-check" />
+    } else {
+      return <input type="checkbox"
+             name="conditional"
+             onChange={this._updateConditional.bind(this, index)}
+             className="condition-check" />
+    }
+  }
+
   _renderConditionalForm = (index) => {
     if (this.state.options[index].conditional) {
       return <ConditionalFormCreate initial_state={{questions: this.state.options[index].questions}}
@@ -137,10 +152,7 @@ class ConditionalCreate extends MultipleChoiceCreate {
                  onChange={this._updateValue.bind(this, index)} />
         </div>
         <div className="conditional-check columns">
-          <input type="checkbox"
-                 name="conditional"
-                 onChange={this._updateConditional.bind(this, index)}
-                 className="condition-check" />
+          { this._renderCheckbox(index) }
           <span>Conditional</span>
         </div>
         <div></div>

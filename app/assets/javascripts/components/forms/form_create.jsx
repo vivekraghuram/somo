@@ -1,19 +1,18 @@
 /**
- * @prop user_id       - the id of the user
- * @prop form_id       - the id of the form to display
  * @prop initial_state - any initial state info for the form
  */
 class FormCreate extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = props.initial_state || {
+    this.state = $.parseJSON(props.initial_state || null) || {
       name      : null,
       intro     : null,
       questions : [],
     };
 
     this.state.saveState = "unsaved";
+    this.state.savePath = null;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -89,12 +88,16 @@ class FormCreate extends React.Component {
     let form = this;
     $.ajax({
       type : "POST",
-      url :  form.props.save_path,
+      url :  this.state.savePath || form.props.save_path,
       dataType: 'json',
       contentType: 'application/json',
       data : JSON.stringify(submission)
-    }).done(function() {
+    }).done(function(msg) {
       form.state.saveState = "saved";
+      if (msg.data) {
+        form.state.save_path = msg.data.save_path;
+        window.history.pushState(null, "Edit Page", msg.data.edit_path);
+      }
       form.forceUpdate();
     }).fail(function(msg) {
       alert("Something went wrong. \
@@ -115,9 +118,11 @@ class FormCreate extends React.Component {
           questions[i].options = null;
         } else if (questions[i].questionType == "conditional") {
           for (var j = 0; j < questions[i].options.length; j++) {
-            if (questions[i].options[j].questions.length > 0) {
+            if (questions[i].options[j].questions && questions[i].options[j].questions.length > 0) {
               questions[i].options[j].questions = this._prepareQuestions(questions[i].options[j].questions,
                                                             prefix + (i + 1) + "-" + (j + 1) + ":");
+            } else {
+              questions[i].options[j].questions = null;
             }
           }
         }
@@ -212,9 +217,7 @@ class FormCreate extends React.Component {
 }
 
 FormCreate.propTypes = {
-    user_id      : React.PropTypes.number.isRequired,
-    form_id      : React.PropTypes.number.isRequired,
     root_path    : React.PropTypes.string.isRequired,
-    save_path  : React.PropTypes.string.isRequired,
+    save_path    : React.PropTypes.string.isRequired,
     initial_state: React.PropTypes.object,
 };
