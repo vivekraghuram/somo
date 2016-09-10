@@ -4,9 +4,8 @@
 class ConditionalFormCreate extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.initial_state || {
-      questions : [],
-    };
+    this.state = props.initial_state || {};
+    this.state.questions = this.state.questions || [];
   }
 
   _updateQuestion = (index, data) => {

@@ -11,7 +11,8 @@ class ApplicationController < ActionController::Base
     render json: {
       message: options[:message],
       to: options[:to],
-      errors: options[:errors]
+      errors: options[:errors],
+      data: options[:data]
     }, status: status
   end
 end

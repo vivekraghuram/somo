@@ -201,7 +201,7 @@ class FormsController < ApplicationController
   def create
     form = Form.new(name: params["name"], intro: params["intro"], json: params.to_json)
     if form.save
-      render_json_message(:ok, message: 'Form created!')
+      render_json_message(:ok, message: 'Form created!', data: { save_path: form_update_path(form.id), edit_path: edit_form_path(form.id) })
     else
       render_json_message(:forbidden, errors: form.errors.full_messages)
     end
@@ -214,8 +214,8 @@ class FormsController < ApplicationController
 
   def update
     # save json
-    form = Form.find(params[:id])
-    if form.update(update_params)
+    form = Form.find(params[:form_id])
+    if form.update(name: params["name"], intro: params["intro"], json: params.to_json)
       render_json_message(:ok, message: "Form saved!")
     else
       render_json_message(:forbidden, errors: form.errors.full_messages)
@@ -272,9 +272,5 @@ class FormsController < ApplicationController
     if !o.save
       throw_error()
     end
-  end
-
-  def update_params
-    params.permit(:json)
   end
 end
