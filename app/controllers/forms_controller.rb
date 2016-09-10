@@ -241,7 +241,7 @@ class FormsController < ApplicationController
   def create_questions(form, prev_question, questions)
     questions.reverse.each do |q|
       question = Question.new(form_id: form.id, questionType: q["questionType"], text: q["text"], qname: q["qname"])
-      if question.save
+      if question.save!
         if !q["options"].nil?
           q["options"].each do |o|
             create_option(form, question, prev_question, o)
@@ -250,16 +250,9 @@ class FormsController < ApplicationController
           create_option(form, question, prev_question, {"value"=>""}) # placeholder option
         end
         prev_question = question
-      else
-        throw_error()
       end
     end
     return prev_question
-  end
-
-  def throw_error
-    puts "<<< Error"
-    1/0
   end
 
   def create_option(form, cur_question, prev_question, option)
@@ -269,8 +262,6 @@ class FormsController < ApplicationController
     else
       o.nextQuestion = prev_question.id
     end
-    if !o.save
-      throw_error()
-    end
+    o.save!
   end
 end
