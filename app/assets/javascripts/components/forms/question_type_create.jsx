@@ -36,12 +36,23 @@ class MultipleChoiceCreate extends React.Component {
     this.forceUpdate();
   }
 
+  _deleteOption = (index, e) => {
+    var newOptions = React.addons.update(this.state.options, {
+            $splice: [[index, 1]],
+    });
+    this.state.options = newOptions;
+    this.props.handleUpdate(this.state);
+    this.forceUpdate();
+  }
+
   _addOption = () => {
     this.state.options.push({value : null});
     this.forceUpdate();
   }
 
   _renderOption = (option, index, arr) => {
+    console.log("INDEX: ");
+    console.log(index);
     return (
       <div className="options columns" key={index}>
         <i className={this._optionIcon()}></i>
@@ -50,6 +61,10 @@ class MultipleChoiceCreate extends React.Component {
                placeholder="Option"
                value={this.state.options[index].value}
                onChange={this._updateValue.bind(this, index)} />
+        <div className = "delete right"
+               onClick = {this._deleteOption.bind(this, index)} >
+          <i className = "fa fa-trash fa-lg"></i>
+        </div>
       </div>
     );
   }
@@ -106,6 +121,15 @@ class ConditionalCreate extends MultipleChoiceCreate {
     this.forceUpdate();
   }
 
+  _deleteOption = (index, e) => {
+    var newOptions = React.addons.update(this.state.options, {
+            $splice: [[index, 1]],
+    });
+    this.state.options = newOptions;
+    this.props.handleUpdate(this.state);
+    this.forceUpdate();
+  }
+
   _updateConditional = (index, e) => {
     this.state.options[index].conditional = e.target.checked;
     this.props.handleUpdate(this.state);
@@ -150,6 +174,10 @@ class ConditionalCreate extends MultipleChoiceCreate {
                  placeholder="Option"
                  value={this.state.options[index].value}
                  onChange={this._updateValue.bind(this, index)} />
+        </div>
+        <div className = "delete right"
+               onClick = {this._deleteOption.bind(this, index)} >
+          <i className = "fa fa-trash fa-lg"></i>
         </div>
         <div className="conditional-check columns">
           { this._renderCheckbox(index) }

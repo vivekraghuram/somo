@@ -25,6 +25,11 @@
               <i class="fa fa-send fa-lg"></i>
             </div>
           <% end %>
+          <%= link_to(form_path(f.id), method: :delete) do %>
+            <div class="delete right">
+              <i class="fa fa-trash fa-lg"></i>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>

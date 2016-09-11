@@ -1,5 +1,5 @@
 class Question < ActiveRecord::Base
-  has_many :options
+  has_many :options, :dependent => :delete_all
   belongs_to :form
 
   validates :text, :qname, :questionType, presence: true
@@ -25,7 +25,7 @@ class Question < ActiveRecord::Base
     else
       response += "\n\nRespond with a short answer (max 120 characters)"
     end
-    return response 
+    return response
   end
 
   def valid_answer(value, options_index)
@@ -60,7 +60,7 @@ class Question < ActiveRecord::Base
     if questionType == "short_answer"
       opt = options.first
       opt.value = response_text
-    else 
+    else
       if questionType == "checkbox"
         # TODO
         opt = options.first

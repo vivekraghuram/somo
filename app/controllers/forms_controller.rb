@@ -225,8 +225,7 @@ class FormsController < ApplicationController
   def destroy
     form = Form.find(params[:id])
     if form.destroy
-      render_json_message(:ok, message: 'Successfully deleted form!',
-                                to: root_path)
+      redirect_to(root_path)
     else
       render_json_message(:forbidden, errors: form.errors.full_messages)
     end
