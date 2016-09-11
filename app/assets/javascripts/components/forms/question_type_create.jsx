@@ -119,15 +119,6 @@ class ConditionalCreate extends MultipleChoiceCreate {
     this.forceUpdate();
   }
 
-  _deleteOption = (index, e) => {
-    var newOptions = React.addons.update(this.state.options, {
-            $splice: [[index, 1]],
-    });
-    this.state.options = newOptions;
-    this.props.handleUpdate(this.state);
-    this.forceUpdate();
-  }
-
   _updateConditional = (index, e) => {
     this.state.options[index].conditional = e.target.checked;
     this.props.handleUpdate(this.state);
