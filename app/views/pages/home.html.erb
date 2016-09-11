@@ -13,12 +13,13 @@
 
 <div class="current">
   <% @forms.each do |f| %>
-    <%= link_to(edit_form_path(f.id)) do %> CLICK ME <% end %>
     <div class="row survey-tile">
       <div class="columns">
-        <div class="columns small-7 large-7">
-          <h2><%= f.name %></h2>
-        </div>
+        <%= link_to(edit_form_path(f.id)) do %>
+          <div class="columns small-7 large-7">
+            <h2><%= f.name %></h2>
+          </div>
+        <% end %>
         <div class="columns right small-5 large-5">
           <%= link_to("/forms/#{f.id}/twilio") do %>
             <div class="delete right">
