@@ -19,7 +19,6 @@
   .fa-close {
     color: #B3B3B3;
     cursor: pointer;
-    transition: all 0.5s;
   }
 }
 
@@ -30,11 +29,6 @@
 .delete {
   margin-left: 10px;
   padding: 5px 9px 6px 9px;
-  transition: all 0.5s;
-
-  i {
-    transition: all 0.5s;
-  }
 }
 
 .delete:hover {
@@ -49,11 +43,6 @@
 .chevron {
   margin-left: 10px;
   padding: 5px 8px 6px 8px;
-  transition: all 0.5s;
-
-  i {
-    transition: all 0.5s;
-  }
 }
 
 .chevron:hover {
@@ -86,17 +75,14 @@
   cursor: pointer;
   border-radius: 20px;
   padding: 10px 20px 10px 20px;
-  transition: all 0.5s;
 
   span{
     color: #B3B3B3;
-    transition: all 0.5s;
   }
 
   i {
     color: #B3B3B3;
     margin-right: 4px;
-    transition: all 0.5s;
   }
 }
 
@@ -119,7 +105,6 @@
 .options-button {
   cursor: pointer;
   color: #B3B3B3;
-  transition: all 0.5s;
   margin-left: 20px;
   margin-bottom: 0;
   padding: 10px;
@@ -153,13 +138,11 @@
   cursor: pointer;
   border: 2px solid $teal;
   padding: 10px 20px;
-  transition: all 0.5s;
   text-align: center;
 
   span{
     color: $teal;
     font-size: 13px;
-    transition: all 0.5s;
   }
 }
 
@@ -186,13 +169,11 @@
   border: 2px solid $teal;
   background-color: $teal;
   padding: 10px 20px;
-  transition: all 0.5s;
   text-align: center;
 
   span{
     color: $light-gray;
     font-size: 13px;
-    transition: all 0.5s;
   }
 }
 

@@ -21,10 +21,8 @@
           </div>
         <% end %>
         <div class="columns right small-5 large-5">
-          <%= link_to("/forms/#{f.id}/twilio") do %>
-            <div class="delete right">
-              <i class="fa fa-send fa-lg"></i>
-            </div>
+          <%= link_to(form_conduct_path(f), class: 'delete right') do %>
+            <i class="fa fa-send fa-lg"></i>
           <% end %>
           <%= link_to(form_path(f.id), method: :delete) do %>
             <div class="delete right">
@@ -35,45 +33,6 @@
       </div>
     </div>
   <% end %>
-
-  <div class="row survey-tile">
-    <div class="columns">
-          <div class="columns small-7 large-7">
-            <h2>Stanley's CS Class</h2>
-          </div>
-          <div class="columns right small-5 large-5">
-            <div class="delete right">
-              <i class="fa fa-send fa-lg"></i>
-            </div>
-          </div>
-    </div>
-  </div>
-
-  <div class="row survey-tile">
-    <div class="columns">
-          <div class="columns small-7 large-7">
-            <h2>Social Entrepreneurs in Nairobi</h2>
-          </div>
-          <div class="columns right small-5 large-5">
-            <div class="delete right">
-              <i class="fa fa-send fa-lg"></i>
-            </div>
-          </div>
-    </div>
-  </div>
-
-  <div class="row survey-tile">
-    <div class="columns">
-          <div class="columns small-7 large-7">
-            <h2>Entrepreneur BootCamp Series Workshop 2</h2>
-          </div>
-          <div class="columns right small-5 large-5">
-            <div class="delete right">
-              <i class="fa fa-send fa-lg"></i>
-            </div>
-          </div>
-    </div>
-  </div>
 </div>
 
 <!--   SENT   -->
