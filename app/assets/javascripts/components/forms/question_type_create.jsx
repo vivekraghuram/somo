@@ -51,8 +51,6 @@ class MultipleChoiceCreate extends React.Component {
   }
 
   _renderOption = (option, index, arr) => {
-    console.log("INDEX: ");
-    console.log(index);
     return (
       <div className="options columns" key={index}>
         <i className={this._optionIcon()}></i>
