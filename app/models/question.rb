@@ -25,7 +25,7 @@ class Question < ActiveRecord::Base
     else
       response += "\n\nRespond with a short answer (max 120 characters)"
     end
-    return response
+    response
   end
 
   def valid_answer(value, options_index)
