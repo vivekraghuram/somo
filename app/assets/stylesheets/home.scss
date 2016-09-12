@@ -1,20 +1,24 @@
 @import "main.scss";
 
 .home-header {
-	background-color: transparent !important;
-	padding: 0 !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+.sent-survey-tile {
+  padding: 20px !important;
+  border-bottom: 1px solid $light-gray;
+  position: relative;
 }
 
 .survey-tile {
-	transition: all 0.5s;
-	padding: 20px !important;
-	border-bottom: 1px solid $light-gray;
-	cursor: pointer;
-  position: relative;
+  @extend .sent-survey-tile;
+  transition: all 0.5s;
+  cursor: pointer;
 
-	h2 {
-		transition: all 0.5s;
-	}
+  h2 {
+    transition: all 0.5s;
+  }
 }
 
 .survey-tile:hover {
@@ -23,9 +27,9 @@
    box-shadow: 0 0 10px #B3B3B3;
    z-index: 100;
 
-	h2 {
-		color: $teal;
-	}
+  h2 {
+    color: $teal;
+  }
 }
 
 //NEW BUTTON
