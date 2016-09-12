@@ -219,5 +219,5 @@ class FormCreate extends React.Component {
 FormCreate.propTypes = {
     root_path    : React.PropTypes.string.isRequired,
     save_path    : React.PropTypes.string.isRequired,
-    initial_state: React.PropTypes.object,
+    initial_state: React.PropTypes.string,
 };
