@@ -1,23 +1,36 @@
+# == Schema Information
+#
+# Table name: questions
+#
+#  id            :integer          not null, primary key
+#  question_type :string
+#  text          :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  form_id       :integer
+#  qname         :string
+#
+
 class Question < ActiveRecord::Base
   has_many :options, :dependent => :delete_all
   belongs_to :form
 
-  validates :text, :qname, :questionType, presence: true
+  validates :text, :qname, :question_type, presence: true
 
   ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
   def construct_text(options_index)
     abc = alpha_cycle(options_index)
     response = text + "\n"
-    if questionType != "short_answer"
+    if question_type != "short_answer"
       # TODO More options than ABC's
       options.each do |option|
         response += "\n" + abc[0].upcase + ": " + option.value
         abc[0] = ""
       end
-      if questionType == "multiple_choice" || questionType == "conditional"
+      if question_type == "multiple_choice" || question_type == "conditional"
         response += "\n\nRespond with a single letter ex: B"
-      elsif questionType == "checkbox"
+      elsif question_type == "checkbox"
         response += "\n\nRespond with one or more letters ex: AC"
       else
         puts "ERROR: unknown question type"
@@ -30,9 +43,9 @@ class Question < ActiveRecord::Base
 
   def valid_answer(value, options_index)
     abc = alpha_cycle(options_index)
-    if questionType == "short_answer"
+    if question_type == "short_answer"
       return true
-    elsif questionType == "checkbox"
+    elsif question_type == "checkbox"
       value.strip.upcase.gsub(/[^A-Z]/, "").each do |choice|
         index = abc.index(choice)
         if index.nil? or (index + 1) > options.length
@@ -40,7 +53,7 @@ class Question < ActiveRecord::Base
         end
         return true
       end
-    elsif questionType == "multiple_choice" || questionType == "conditional"
+    elsif question_type == "multiple_choice" || question_type == "conditional"
       value = value.upcase.gsub(/[^A-Z]/, "")
       if value.length > 1
         return false
@@ -57,25 +70,25 @@ class Question < ActiveRecord::Base
   # Updates ts to next question
   def get_answer(response_text, ts)
     opt = Option.new
-    if questionType == "short_answer"
+    if question_type == "short_answer"
       opt = options.first
       opt.value = response_text
     else
-      if questionType == "checkbox"
+      if question_type == "checkbox"
         # TODO
         opt = options.first
         opt.value = response_text
-      elsif questionType == "multiple_choice" || questionType == "conditional"
+      elsif question_type == "multiple_choice" || question_type == "conditional"
         # TODO full reponse handling
         puts "response_text: " + response_text
         opt = options()[alpha_cycle(ts.alpha_index).index(response_text)]
       end
       ts.alpha_index = (ts.alpha_index + options.length) % ABC.size
     end
-    if !opt.nil? and opt.nextQuestion.nil?
+    if !opt.nil? and opt.next_question.nil?
       ts.question = nil
     else
-      ts.question = Question.find(opt.nextQuestion)
+      ts.question = Question.find(opt.next_question)
     end
     ts.save
     return opt.value

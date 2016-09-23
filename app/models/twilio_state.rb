@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: twilio_states
+#
+#  id             :integer          not null, primary key
+#  form_id        :integer
+#  question_id    :integer
+#  phone          :string
+#  state          :integer
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  alpha_index    :integer
+#  sent_last_hour :boolean          default(TRUE)
+#
+
 class TwilioState < ActiveRecord::Base
   belongs_to :form
   belongs_to :question

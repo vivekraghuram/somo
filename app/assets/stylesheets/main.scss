@@ -4,8 +4,8 @@ $dark-teal: #648F80;
 $light-gray: #E6E6E6;
 
 * {
-	border: 0;
-	outline: none;
+  border: 0;
+  outline: none;
 }
 
 *:focus {
@@ -13,162 +13,191 @@ $light-gray: #E6E6E6;
 }
 
 body {
-	background-color: $light-gray;
-	font-family: 'Open Sans', sans-serif;
-	font-size: 14px;
-	margin-bottom: 50px;
+  background-color: $light-gray;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  padding-bottom: 50px;
+  height: auto;
 }
 
 h1 {
-	font-size: 30px;
-	font-weight: 600;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 h2 {
-	font-size: 20px;
-	font-weight: 400;
+  font-size: 20px;
+  font-weight: 400;
 }
 
 h3 {
-	font-size: 14px;
-	font-weight: 400;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 h4 {
-	text-transform: uppercase;
-	font-size: 12px;
-	font-weight: 700;
-	text-align: center;
-	color: $teal;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: $teal;
 }
 
 h5 {
-	text-transform: uppercase;
-	font-size: 12px;
-	font-weight: 700;
-	color: $teal;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+  color: $teal;
 }
 
 span {
-	text-transform: uppercase;
-	font-weight: 600;
-	font-size: 12px;
-	color: #808080;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 12px;
+  color: #808080;
 }
 
 a {
-	text-decoration: none;
-	color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .row {
-	background-color: white;
-	padding: 30px;
+  background-color: white;
+  padding: 30px;
 }
 
 .question {
-	cursor: default;
-  transition: all 0.5s;
-  margin-bottom: 2px;
+  cursor: default;
+  transition: all 0.3s;
+  margin-bottom: 5px;
   position: relative;
 }
 
-.question:after {
-	border-left: 5px solid blue;
-}
-
-.question:hover {
-   -moz-box-shadow: 0 0 10px #B3B3B3;
-   -webkit-box-shadow: 0 0 10px #B3B3B3;
-   box-shadow: 0 0 10px #B3B3B3;
-   z-index: 100;
-}
-
 .header {
-	padding-bottom: 0;
+  padding-bottom: 0;
 }
 
 textarea {
-	box-shadow: none;
+  box-shadow: none;
 }
 
 input[name="title"] {
-	font-size: 30px;
-	font-weight: 600;
-	border: none;
-	height: 50px;
-	box-shadow: none;
+  font-size: 30px;
+  font-weight: 600;
+  border: none;
+  height: 50px;
+  box-shadow: none;
 }
 
 input[name="question"] {
-	font-size: 20px;
-	font-weight: 400;
-	border: none;
-	box-shadow: none;
+  font-size: 20px;
+  font-weight: 400;
+  border: none;
+  box-shadow: none;
 }
 
 input[name="option"] {
-	display: inline-block;
-	width: 70%;
-	border: none;
-	box-shadow: none;
-	margin-bottom: 0;
+  display: inline-block;
+  width: 70%;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 0;
 }
 
 input[name="option-conditional"] {
-	display: inline-block;
-	width: 70%;
-	border: none;
-	box-shadow: none;
-	margin-bottom: 0;
+  display: inline-block;
+  width: 70%;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 0;
 }
 
 input[name="required"] {
-	margin-right: 8px;
+  margin-right: 8px;
 }
 
 input[name="short"] {
-	background-color: $light-gray;
-	box-shadow: none;
+  background-color: $light-gray;
+  box-shadow: none;
 }
 
 input[name="conditional"] {
-	margin-right: 8px;
+  margin-right: 8px;
+}
+
+input[type=radio].with-font,
+input[type=checkbox].with-font {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+input[type=radio].with-font ~ label:before,
+input[type=checkbox].with-font ~ label:before {
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f10c";
+  letter-spacing: 10px;
+  font-size: 1.2em;
+  color: #535353;
+  width: 1.4em;
+}
+
+input[type=checkbox].with-font ~ label:before {
+    content: "\f096";
+}
+
+input[type=radio].with-font:checked ~label:before,
+input[type=checkbox].with-font:checked ~ label:before  {
+    content: "\f046";
+    font-size: 1.2em;
+    color: $teal;
+    letter-spacing: 5px;
+}
+
+input[type=radio].with-font:checked ~label:before {
+  content: "\f192";
 }
 
 .error-msg {
-	background-color: #D36A6A;
-	padding: 20px;
-	color: $light-gray;
-	text-align: center;
-	display: inline-block;
-	position: fixed;
-	bottom: 30px;
-	right: 30px;
-	-moz-box-shadow: 0 0 10px #B3B3B3;
-	-webkit-box-shadow: 0 0 10px #B3B3B3;
-	box-shadow: 0 0 10px #B3B3B3;
+  background-color: #D36A6A;
+  padding: 20px;
+  color: $light-gray;
+  text-align: center;
+  display: inline-block;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  -moz-box-shadow: 0 0 10px #B3B3B3;
+  -webkit-box-shadow: 0 0 10px #B3B3B3;
+  box-shadow: 0 0 10px #B3B3B3;
 }
 
 //NAV
 
 .contain-to-grid {
-	background-color:transparent;
+  background-color:transparent;
 }
 
 .top-bar {
-	background-color:transparent;
+  background-color:transparent;
 
-	.nav-title {
-		color: $teal;
-		font-family: 'Amatic SC', cursive;
-		font-size: 24px;
-		line-height: 4rem;
-	}
+  .nav-title {
+    color: $teal;
+    font-family: 'Amatic SC', cursive;
+    font-size: 24px;
+    line-height: 4rem;
+  }
 }

@@ -4,6 +4,8 @@ gem 'foundation-rails', '~> 5.5.3.2'
 
 gem 'font-awesome-rails'
 
+gem 'annotate'
+
 # For Googlesheets
 gem 'google_drive'
 

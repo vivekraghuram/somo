@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160704055240) do
+ActiveRecord::Schema.define(version: 20160912033504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,32 +19,49 @@ ActiveRecord::Schema.define(version: 20160704055240) do
   create_table "forms", force: :cascade do |t|
     t.string   "name"
     t.text     "intro"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.integer  "firstQuestion"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.integer  "first_question"
     t.string   "json"
   end
 
   create_table "options", force: :cascade do |t|
     t.string   "value"
     t.integer  "question_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.integer  "nextQuestion"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "next_question"
   end
 
   add_index "options", ["question_id"], name: "index_options_on_question_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.string   "questionType"
+    t.string   "question_type"
     t.string   "text"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.integer  "form_id"
     t.string   "qname"
   end
 
   add_index "questions", ["form_id"], name: "index_questions_on_form_id", using: :btree
+
+  create_table "respondents", force: :cascade do |t|
+    t.string   "phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "responses", force: :cascade do |t|
+    t.string   "value",         null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "respondent_id"
+    t.integer  "question_id"
+  end
+
+  add_index "responses", ["question_id"], name: "index_responses_on_question_id", using: :btree
+  add_index "responses", ["respondent_id"], name: "index_responses_on_respondent_id", using: :btree
 
   create_table "twilio_states", force: :cascade do |t|
     t.integer  "form_id"

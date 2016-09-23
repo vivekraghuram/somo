@@ -25,7 +25,7 @@ FactoryGirl.define do
     f.intro          "This is a tester form."
     f.created_at     { DateTime.now }
     f.updated_at     { DateTime.now }
-    f.firstQuestion  0
+    f.first_question  0
     f.json           form_json
   end
 end

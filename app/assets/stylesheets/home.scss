@@ -38,19 +38,19 @@
   cursor: pointer;
   background-color: $teal;
   padding: 10px 30px;
-  transition: all 0.5s;
+  transition: all 0.3s;
   text-align: center;
   margin: auto;
 
   span{
     color: $light-gray;
     font-size: 13px;
-    transition: all 0.5s;
+    transition: all 0.3s;
   }
-}
 
-.new:hover {
-  background-color: $dark-teal;
+  &:hover {
+    background-color: $dark-teal;
+  }
 }
 
 .new-button {
